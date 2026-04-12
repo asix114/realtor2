@@ -20,8 +20,6 @@
         .private-field { background: #fef3c7; border-left: 3px solid #f5b042; }
         .photo-preview { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
         .photo-preview img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; cursor: pointer; }
-        .copy-btn { background: #e5e7eb; padding: 4px 8px; border-radius: 6px; font-size: 12px; cursor: pointer; }
-        .copy-btn:hover { background: #d1d5db; }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -79,7 +77,6 @@
         <div class="p-6 space-y-4">
             <input type="hidden" id="objectId">
             
-            <!-- Основная информация -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium mb-1">Адрес *</label>
@@ -87,7 +84,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium mb-1">Номер квартиры</label>
-                    <input type="text" id="apartment" class="w-full border rounded-lg px-3 py-2 bg-yellow-50" placeholder="45 (скрыто от покупателей)">
+                    <input type="text" id="apartment" class="w-full border rounded-lg px-3 py-2 bg-yellow-50" placeholder="45 (скрыто)">
                     <p class="text-xs text-gray-400 mt-1">🔒 Видно только в CRM</p>
                 </div>
                 <div>
@@ -96,7 +93,6 @@
                 </div>
             </div>
 
-            <!-- Характеристики -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
                     <label class="block text-sm font-medium mb-1">Комнат</label>
@@ -116,7 +112,6 @@
                 </div>
             </div>
 
-            <!-- Доп. характеристики -->
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium mb-1">Балкон/Лоджия</label>
@@ -138,7 +133,6 @@
                 </div>
             </div>
 
-            <!-- Фото -->
             <div>
                 <label class="block text-sm font-medium mb-1">Фотографии</label>
                 <input type="file" id="photoInput" accept="image/*" multiple class="w-full border rounded-lg px-3 py-2">
@@ -147,15 +141,13 @@
                 <p class="text-xs text-gray-400 mt-1">Можно загрузить несколько фото</p>
             </div>
 
-            <!-- Описание -->
             <div>
                 <label class="block text-sm font-medium mb-1">Описание для покупателей</label>
                 <textarea id="description" rows="3" class="w-full border rounded-lg px-3 py-2" placeholder="Просторная квартира, свежий ремонт..."></textarea>
             </div>
 
-            <!-- Скрытая информация (только в CRM) -->
             <div class="private-field p-4 rounded-lg">
-                <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fas fa-lock text-gold"></i> Конфиденциальная информация (видно только вам)</h4>
+                <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fas fa-lock text-gold"></i> Конфиденциальная информация</h4>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -202,7 +194,8 @@
 </div>
 
 <script>
-    const API_URL = 'https://script.google.com/macros/s/AKfycbxQuSey6Pxiv9ctFpaQBZ5NLEYEuONUd6XaWTZOZC1YwM_-OewxpDZqydPYVko_grtv/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbzSgA18PGRrjVO2fKMtfNp7gfOpv0gdiJIrXe9vEG_95gvTxDwM2zfVAOTZ2DqoYnBZ/exec';
+    
     let objects = [];
     let editId = null;
     let uploadedPhotos = [];
@@ -214,7 +207,6 @@
         setTimeout(() => toast.classList.remove('show'), 2000);
     }
 
-    // Загрузка фото
     document.getElementById('photoInput').addEventListener('change', function(e) {
         const preview = document.getElementById('photoPreview');
         preview.innerHTML = '';
@@ -288,13 +280,11 @@
         `).join('');
     }
 
-    // Отправить презентацию клиенту
     function sendPresentation(id) {
         const obj = objects.find(o => o.ID == id);
         if (!obj) return;
         
-        const presentationText = `
-🏠 ОБЪЕКТ НЕДВИЖИМОСТИ
+        const presentationText = `🏠 ОБЪЕКТ НЕДВИЖИМОСТИ
 📍 Адрес: ${obj.Адрес}
 💰 Цена: ${Number(obj.Цена).toLocaleString()} ₽
 📐 Характеристики:
@@ -302,20 +292,17 @@
    • Этаж: ${obj.Этаж || '?'}/${obj.Всего_этажей || '?'}
    • Площадь: ${obj.Площадь || '?'} м²
    • Балкон: ${obj.Балкон || 'нет'}
-📝 Описание: ${obj.Описание || 'Уточняйте'}
-        `;
+📝 Описание: ${obj.Описание || 'Уточняйте'}`;
         
         navigator.clipboard.writeText(presentationText);
-        showToast('✅ Презентация скопирована! Отправьте клиенту в мессенджер');
+        showToast('✅ Презентация скопирована! Отправьте клиенту');
     }
 
-    // Выгрузка в рекламу (Авито, Циан)
     function exportToAd(id) {
         const obj = objects.find(o => o.ID == id);
         if (!obj) return;
         
-        const adText = `
-${obj.Адрес}
+        const adText = `${obj.Адрес}
 ${Number(obj.Цена).toLocaleString()} ₽
 
 ${obj.Комнат}-комнатная квартира, ${obj.Площадь} м², ${obj.Этаж}/${obj.Всего_этажей} этаж
@@ -325,11 +312,10 @@ ${obj.Балкон ? `Балкон/лоджия: ${obj.Балкон}` : ''}
 ${obj.Описание || ''}
 
 📞 Звоните: +7 (960) 763-51-70
-Людмила Мельверт, риэлтор
-        `;
+Людмила Мельверт, риэлтор`;
         
         navigator.clipboard.writeText(adText);
-        showToast('✅ Текст для рекламы скопирован! Вставьте в Авито, Циан, Юлу');
+        showToast('✅ Текст для рекламы скопирован!');
     }
 
     function openAddModal() {
