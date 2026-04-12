@@ -19,7 +19,7 @@
         .modal.active { display: flex; }
         .private-field { background: #fef3c7; border-left: 3px solid #f5b042; }
         .photo-preview { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-        .photo-preview img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; cursor: pointer; }
+        .photo-preview img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -133,12 +133,11 @@
                 </div>
             </div>
 
+            <!-- Ссылка на папку Яндекс Диска -->
             <div>
-                <label class="block text-sm font-medium mb-1">Фотографии</label>
-                <input type="file" id="photoInput" accept="image/*" multiple class="w-full border rounded-lg px-3 py-2">
-                <div id="photoPreview" class="photo-preview"></div>
-                <input type="hidden" id="photos" value="">
-                <p class="text-xs text-gray-400 mt-1">Можно загрузить несколько фото</p>
+                <label class="block text-sm font-medium mb-1">📁 Ссылка на папку с фото (Яндекс Диск)</label>
+                <input type="text" id="yandexFolderUrl" class="w-full border rounded-lg px-3 py-2" placeholder="https://disk.yandex.ru/d/xxxx">
+                <p class="text-xs text-gray-400 mt-1">Вставьте одну ссылку на папку — все фото подгрузятся автоматически</p>
             </div>
 
             <div>
@@ -198,7 +197,6 @@
     
     let objects = [];
     let editId = null;
-    let uploadedPhotos = [];
 
     function showToast(msg) {
         const toast = document.getElementById('toast');
@@ -206,23 +204,6 @@
         toast.classList.add('show');
         setTimeout(() => toast.classList.remove('show'), 2000);
     }
-
-    document.getElementById('photoInput').addEventListener('change', function(e) {
-        const preview = document.getElementById('photoPreview');
-        preview.innerHTML = '';
-        uploadedPhotos = [];
-        
-        Array.from(e.target.files).forEach(file => {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                uploadedPhotos.push(event.target.result);
-                const img = document.createElement('img');
-                img.src = event.target.result;
-                preview.appendChild(img);
-            };
-            reader.readAsDataURL(file);
-        });
-    });
 
     async function loadObjects() {
         const filterStatus = document.getElementById('filterStatus').value;
@@ -254,7 +235,9 @@
         container.innerHTML = objectsList.map(obj => `
             <div class="bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition">
                 <div class="flex flex-col md:flex-row gap-4">
-                    ${obj.Фото ? `<img src="${obj.Фото.split(',')[0]}" class="w-full md:w-32 h-32 object-cover rounded-lg" onerror="this.src='https://via.placeholder.com/150'">` : '<div class="w-full md:w-32 h-32 bg-gray-200 rounded-lg flex items-center justify-center"><i class="fas fa-home text-gray-400 text-3xl"></i></div>'}
+                    <div class="w-full md:w-32 h-32 bg-gray-200 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-home text-gray-400 text-3xl"></i>
+                    </div>
                     <div class="flex-1">
                         <div class="flex justify-between items-start flex-wrap gap-2">
                             <h3 class="text-lg font-bold text-gray-800">${obj.Адрес || 'Без адреса'}</h3>
@@ -274,6 +257,7 @@
                             <button onclick="changeStatus(${obj.ID}, 'продано')" class="text-red-600 text-sm"><i class="fas fa-check-circle"></i> Продано</button>
                         </div>
                         ${obj.Номер_квартиры ? `<div class="mt-2 text-xs text-gray-400">🔒 кв. ${obj.Номер_квартиры}</div>` : ''}
+                        ${obj.Яндекс_папка ? `<div class="mt-1 text-xs text-gray-400">📁 <a href="${obj.Яндекс_папка}" target="_blank">Папка с фото</a></div>` : ''}
                     </div>
                 </div>
             </div>
@@ -292,7 +276,8 @@
    • Этаж: ${obj.Этаж || '?'}/${obj.Всего_этажей || '?'}
    • Площадь: ${obj.Площадь || '?'} м²
    • Балкон: ${obj.Балкон || 'нет'}
-📝 Описание: ${obj.Описание || 'Уточняйте'}`;
+📝 Описание: ${obj.Описание || 'Уточняйте'}
+📁 Фото: ${obj.Яндекс_папка || 'нет'}`;
         
         navigator.clipboard.writeText(presentationText);
         showToast('✅ Презентация скопирована! Отправьте клиенту');
@@ -332,15 +317,13 @@ ${obj.Описание || ''}
         document.getElementById('balcony').value = '';
         document.getElementById('houseType').value = 'панельный';
         document.getElementById('description').value = '';
+        document.getElementById('yandexFolderUrl').value = '';
         document.getElementById('ownerName').value = '';
         document.getElementById('ownerPhone').value = '';
         document.getElementById('commissionPercent').value = '';
         document.getElementById('commissionFixed').value = '';
         document.getElementById('privateNote').value = '';
         document.getElementById('status').value = 'активно';
-        document.getElementById('photoPreview').innerHTML = '';
-        document.getElementById('photoInput').value = '';
-        uploadedPhotos = [];
         document.getElementById('objectModal').classList.add('active');
     }
 
@@ -361,6 +344,7 @@ ${obj.Описание || ''}
         document.getElementById('balcony').value = obj.Балкон || '';
         document.getElementById('houseType').value = obj.Тип_дома || 'панельный';
         document.getElementById('description').value = obj.Описание || '';
+        document.getElementById('yandexFolderUrl').value = obj.Яндекс_папка || '';
         document.getElementById('ownerName').value = obj.Собственник_ФИО || '';
         document.getElementById('ownerPhone').value = obj.Собственник_телефон || '';
         document.getElementById('commissionPercent').value = obj.Комиссия_процент || '';
@@ -379,8 +363,6 @@ ${obj.Описание || ''}
             return;
         }
         
-        const photos = uploadedPhotos.length > 0 ? uploadedPhotos.join(',') : '';
-        
         const params = new URLSearchParams();
         params.append('action', 'addObject');
         params.append('address', address);
@@ -393,7 +375,7 @@ ${obj.Описание || ''}
         params.append('balcony', document.getElementById('balcony').value);
         params.append('houseType', document.getElementById('houseType').value);
         params.append('description', document.getElementById('description').value);
-        params.append('photos', photos);
+        params.append('yandexFolder', document.getElementById('yandexFolderUrl').value);
         params.append('ownerName', document.getElementById('ownerName').value);
         params.append('ownerPhone', document.getElementById('ownerPhone').value);
         params.append('commissionPercent', document.getElementById('commissionPercent').value);
