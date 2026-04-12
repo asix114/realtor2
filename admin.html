@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CRM | Управление объектами</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f3f4f6; }
+        .btn-gold { background-color: #f5b042; }
+        .btn-gold:hover { background-color: #e09e2e; }
+        .status-active { background: #d1fae5; color: #059669; }
+        .status-sold { background: #fee2e2; color: #dc2626; }
+        .status-reserved { background: #fef3c7; color: #92400e; }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1f2937; color: white; padding: 8px 16px; border-radius: 9999px; font-size: 14px; z-index: 1000; opacity: 0; transition: opacity 0.3s; }
+        .toast.show { opacity: 1; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; }
+        .modal.active { display: flex; }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+<div class="toast" id="toast">✅ Готово!</div>
+
+<!-- Шапка -->
+<header class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <img src="логотип недвижка золотой.png" alt="Лого" class="h-8 w-auto">
+            <div>
+                <h1 class="text-lg font-bold text-gray-800">CRM Риэлтора</h1>
+                <p class="text-xs text-gray-500">Управление объектами</p>
+            </div>
+        </div>
+        <div class="flex gap-2">
+            <a href="catalog.html" class="text-gray-600 hover:text-gold px-3 py-1 text-sm">📋 Каталог</a>
+            <a href="index.html" class="text-gray-600 hover:text-gold px-3 py-1 text-sm">🏠 Лендинг</a>
+        </div>
+    </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 py-6">
+    <!-- Кнопка добавления -->
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">📦 Объекты недвижимости</h2>
+        <button onclick="openAddModal()" class="btn-gold text-gray-900 px-4 py-2 rounded-lg font-semibold flex items-center gap-2">
+            <i class="fas fa-plus"></i> Добавить объект
+        </button>
+    </div>
+
+    <!-- Фильтры -->
+    <div class="bg-white rounded-xl p-4 mb-6 shadow-sm">
+        <div class="flex flex-wrap gap-3">
+            <select id="filterStatus" class="border rounded-lg px-3 py-2 text-sm">
+                <option value="all">Все статусы</option>
+                <option value="активно">Активно</option>
+                <option value="продано">Продано</option>
+                <option value="в резерве">В резерве</option>
+            </select>
+            <input type="text" id="filterSearch" placeholder="Поиск по адресу..." class="border rounded-lg px-3 py-2 text-sm flex-1">
+            <button onclick="loadObjects()" class="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm">🔍 Поиск</button>
+        </div>
+    </div>
+
+    <!-- Список объектов -->
+    <div id="objectsList" class="space-y-3">
+        <div class="text-center py-10 text-gray-500">Загрузка...</div>
+    </div>
+</main>
+
+<!-- Модальное окно добавления/редактирования -->
+<div id="objectModal" class="modal">
+    <div class="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4">
+        <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
+            <h3 id="modalTitle" class="text-xl font-bold">➕ Новый объект</h3>
+            <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+        </div>
+        <div class="p-6 space-y-4">
+            <input type="hidden" id="objectId">
+            
+            <div>
+                <label class="block text-sm font-medium mb-1">Адрес *</label>
+                <input type="text" id="address" class="w-full border rounded-lg px-3 py-2" placeholder="ул. Ленина, д. 10, кв. 5">
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Цена (₽) *</label>
+                    <input type="number" id="price" class="w-full border rounded-lg px-3 py-2" placeholder="3 500 000">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Количество комнат</label>
+                    <input type="number" id="rooms" class="w-full border rounded-lg px-3 py-2" placeholder="2">
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Этаж</label>
+                    <input type="text" id="floor" class="w-full border rounded-lg px-3 py-2" placeholder="5/9">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Площадь (м²)</label>
+                    <input type="text" id="area" class="w-full border rounded-lg px-3 py-2" placeholder="48">
+                </div>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium mb-1">Фото (ссылка)</label>
+                <input type="text" id="photo" class="w-full border rounded-lg px-3 py-2" placeholder="https://...">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium mb-1">Описание</label>
+                <textarea id="description" rows="4" class="w-full border rounded-lg px-3 py-2" placeholder="Просторная квартира, свежий ремонт, рядом школа и парк..."></textarea>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium mb-1">Статус</label>
+                <select id="status" class="w-full border rounded-lg px-3 py-2">
+                    <option value="активно">Активно</option>
+                    <option value="в резерве">В резерве</option>
+                    <option value="продано">Продано</option>
+                </select>
+            </div>
+        </div>
+        <div class="border-t px-6 py-4 flex justify-end gap-3">
+            <button onclick="closeModal()" class="px-4 py-2 border rounded-lg">Отмена</button>
+            <button onclick="saveObject()" class="btn-gold text-gray-900 px-4 py-2 rounded-lg font-semibold">Сохранить</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ============= НАСТРОЙКИ =============
+    const API_URL = 'https://script.google.com/macros/s/AKfycbxQuSey6Pxiv9ctFpaQBZ5NLEYEuONUd6XaWTZOZC1YwM_-OewxpDZqydPYVko_grtv/exec';
+    
+    let objects = [];
+    let editId = null;
+    
+    // Показать уведомление
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+    
+    // Загрузить объекты
+    async function loadObjects() {
+        const filterStatus = document.getElementById('filterStatus').value;
+        const filterSearch = document.getElementById('filterSearch').value.toLowerCase();
+        
+        try {
+            const response = await fetch(`${API_URL}?action=getObjects`);
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                objects = data.objects || [];
+                
+                // Фильтрация
+                let filtered = objects;
+                if (filterStatus !== 'all') {
+                    filtered = filtered.filter(obj => obj.Статус === filterStatus);
+                }
+                if (filterSearch) {
+                    filtered = filtered.filter(obj => obj.Адрес?.toLowerCase().includes(filterSearch));
+                }
+                
+                renderObjects(filtered);
+            } else {
+                showToast('Ошибка загрузки');
+            }
+        } catch(e) {
+            console.error(e);
+            showToast('Ошибка соединения');
+        }
+    }
+    
+    // Отобразить объекты
+    function renderObjects(objectsList) {
+        const container = document.getElementById('objectsList');
+        
+        if (objectsList.length === 0) {
+            container.innerHTML = '<div class="text-center py-10 text-gray-500">📭 Нет объектов</div>';
+            return;
+        }
+        
+        container.innerHTML = objectsList.map(obj => `
+            <div class="bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition">
+                <div class="flex flex-col md:flex-row gap-4">
+                    ${obj.Фото ? `<img src="${obj.Фото}" class="w-full md:w-32 h-32 object-cover rounded-lg" onerror="this.src='https://via.placeholder.com/150'">` : '<div class="w-full md:w-32 h-32 bg-gray-200 rounded-lg flex items-center justify-center"><i class="fas fa-home text-gray-400 text-3xl"></i></div>'}
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start flex-wrap gap-2">
+                            <h3 class="text-lg font-bold text-gray-800">${obj.Адрес || 'Без адреса'}</h3>
+                            <span class="px-2 py-1 rounded-full text-xs font-semibold status-${obj.Статус === 'активно' ? 'active' : (obj.Статус === 'продано' ? 'sold' : 'reserved')}">${obj.Статус || 'активно'}</span>
+                        </div>
+                        <p class="text-2xl font-bold text-gold mt-1">${Number(obj.Цена).toLocaleString()} ₽</p>
+                        <div class="flex flex-wrap gap-3 mt-2 text-sm text-gray-600">
+                            <span><i class="fas fa-door-open"></i> ${obj.Комнат || '?'} комн.</span>
+                            <span><i class="fas fa-layer-group"></i> ${obj.Этаж || '?'} этаж</span>
+                            <span><i class="fas fa-ruler-combined"></i> ${obj.Площадь || '?'} м²</span>
+                        </div>
+                        <p class="text-gray-500 text-sm mt-2 line-clamp-2">${(obj.Описание || '').substring(0, 100)}${(obj.Описание || '').length > 100 ? '...' : ''}</p>
+                        <div class="flex gap-2 mt-3">
+                            <button onclick="editObject(${obj.ID})" class="text-blue-600 text-sm"><i class="fas fa-edit"></i> Редакт.</button>
+                            <button onclick="changeStatus(${obj.ID}, 'продано')" class="text-red-600 text-sm"><i class="fas fa-check-circle"></i> Продано</button>
+                            <button onclick="copyLink(${obj.ID})" class="text-gray-600 text-sm"><i class="fas fa-link"></i> Ссылка</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    // Открыть модальное окно для добавления
+    function openAddModal() {
+        editId = null;
+        document.getElementById('modalTitle').innerText = '➕ Новый объект';
+        document.getElementById('objectId').value = '';
+        document.getElementById('address').value = '';
+        document.getElementById('price').value = '';
+        document.getElementById('rooms').value = '';
+        document.getElementById('floor').value = '';
+        document.getElementById('area').value = '';
+        document.getElementById('photo').value = '';
+        document.getElementById('description').value = '';
+        document.getElementById('status').value = 'активно';
+        document.getElementById('objectModal').classList.add('active');
+    }
+    
+    // Редактировать объект
+    function editObject(id) {
+        const obj = objects.find(o => o.ID == id);
+        if (!obj) return;
+        
+        editId = id;
+        document.getElementById('modalTitle').innerText = '✏️ Редактировать объект';
+        document.getElementById('objectId').value = id;
+        document.getElementById('address').value = obj.Адрес || '';
+        document.getElementById('price').value = obj.Цена || '';
+        document.getElementById('rooms').value = obj.Комнат || '';
+        document.getElementById('floor').value = obj.Этаж || '';
+        document.getElementById('area').value = obj.Площадь || '';
+        document.getElementById('photo').value = obj.Фото || '';
+        document.getElementById('description').value = obj.Описание || '';
+        document.getElementById('status').value = obj.Статус || 'активно';
+        document.getElementById('objectModal').classList.add('active');
+    }
+    
+    // Сохранить объект
+    async function saveObject() {
+        const address = document.getElementById('address').value;
+        const price = document.getElementById('price').value;
+        
+        if (!address || !price) {
+            showToast('Заполните адрес и цену');
+            return;
+        }
+        
+        const params = new URLSearchParams();
+        params.append('action', 'addObject');
+        params.append('address', address);
+        params.append('price', price);
+        params.append('rooms', document.getElementById('rooms').value);
+        params.append('floor', document.getElementById('floor').value);
+        params.append('area', document.getElementById('area').value);
+        params.append('photo', document.getElementById('photo').value);
+        params.append('description', document.getElementById('description').value);
+        params.append('status', document.getElementById('status').value);
+        
+        try {
+            const response = await fetch(`${API_URL}?${params.toString()}`);
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                showToast('Объект сохранён');
+                closeModal();
+                loadObjects();
+            } else {
+                showToast('Ошибка сохранения');
+            }
+        } catch(e) {
+            showToast('Ошибка соединения');
+        }
+    }
+    
+    // Изменить статус
+    async function changeStatus(id, status) {
+        try {
+            const response = await fetch(`${API_URL}?action=updateStatus&id=${id}&status=${status}`);
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                showToast(`Статус изменён на "${status}"`);
+                loadObjects();
+            }
+        } catch(e) {
+            showToast('Ошибка');
+        }
+    }
+    
+    // Скопировать ссылку на объект
+    function copyLink(id) {
+        const url = `${window.location.origin}/realtor2/object.html?id=${id}`;
+        navigator.clipboard.writeText(url);
+        showToast('Ссылка скопирована');
+    }
+    
+    function closeModal() {
+        document.getElementById('objectModal').classList.remove('active');
+    }
+    
+    // Загрузка при старте
+    loadObjects();
+    
+    // Фильтры
+    document.getElementById('filterStatus').addEventListener('change', loadObjects);
+    document.getElementById('filterSearch').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') loadObjects();
+    });
+    
+    // Закрытие модалки по клику вне
+    document.getElementById('objectModal').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('objectModal')) closeModal();
+    });
+</script>
+</body>
+</html>
