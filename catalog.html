@@ -10,67 +10,76 @@
         .btn-gold { background-color: #f5b042; }
         .btn-gold:hover { background-color: #e09e2e; }
         .text-gold { color: #f5b042; }
+        body { font-size: 16px; }
+        button, a { font-size: 16px; }
+        @media (max-width: 640px) {
+            .card-title { font-size: 18px; }
+            .card-price { font-size: 22px; }
+        }
     </style>
 </head>
 <body class="bg-gray-50">
 
 <header class="bg-white shadow-sm sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center flex-wrap gap-2">
         <div class="flex items-center gap-3">
-            <img src="логотип недвижка золотой.png" alt="Лого" class="h-8 w-auto">
+            <img src="логотип недвижка золотой.png" alt="Лого" class="h-10 w-auto">
             <div>
-                <h1 class="text-lg font-bold text-gray-800">Людмила Мельверт</h1>
-                <p class="text-xs text-gray-500">Риэлтор с 26-летним стажем</p>
+                <h1 class="text-xl font-bold text-gray-800">ЛЮДМИЛА МЕЛЬВЕРТ</h1>
+                <p class="text-xs text-gray-500">РИЭЛТОР С 26-ЛЕТНИМ СТАЖЕМ</p>
             </div>
         </div>
-        <a href="#contact" class="btn-gold text-gray-900 px-4 py-1.5 rounded-xl text-sm font-semibold">Бесплатно</a>
+        <a href="#contact" class="btn-gold text-gray-900 px-5 py-2 rounded-xl text-base font-semibold">БЕСПЛАТНО</a>
     </div>
 </header>
 
 <main class="max-w-7xl mx-auto px-4 py-8">
     <div class="text-center mb-8">
-        <h1 class="text-3xl md:text-4xl font-bold text-gray-800">🏠 Каталог квартир</h1>
-        <p class="text-gray-600 mt-2">Шарыпово и Ужур</p>
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-800">🏠 КАТАЛОГ КВАРТИР</h1>
+        <p class="text-gray-600 mt-2 text-base">ШАРЫПОВО И УЖУР</p>
     </div>
 
+    <!-- ФИЛЬТРЫ -->
     <div class="bg-white rounded-xl p-4 mb-8 shadow-sm">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <input type="text" id="filterAddress" placeholder="Поиск по адресу" class="border rounded-lg px-3 py-2 text-sm">
-            <select id="filterRooms" class="border rounded-lg px-3 py-2 text-sm">
-                <option value="">Все комнаты</option>
-                <option value="1">1 комната</option>
-                <option value="2">2 комнаты</option>
-                <option value="3">3 комнаты</option>
-                <option value="4">4+ комнаты</option>
+            <input type="text" id="filterAddress" placeholder="ПОИСК ПО АДРЕСУ" class="border rounded-lg px-3 py-2 text-base">
+            <select id="filterRooms" class="border rounded-lg px-3 py-2 text-base">
+                <option value="">ВСЕ КОМНАТЫ</option>
+                <option value="1">1 КОМНАТА</option>
+                <option value="2">2 КОМНАТЫ</option>
+                <option value="3">3 КОМНАТЫ</option>
+                <option value="4">4+ КОМНАТЫ</option>
             </select>
-            <input type="number" id="filterPriceMax" placeholder="Макс. цена" class="border rounded-lg px-3 py-2 text-sm">
-            <button onclick="loadObjects()" class="btn-gold text-gray-900 px-4 py-2 rounded-lg font-semibold">🔍 Найти</button>
+            <input type="number" id="filterPriceMax" placeholder="МАКС. ЦЕНА" class="border rounded-lg px-3 py-2 text-base">
+            <button onclick="loadObjects()" class="btn-gold text-gray-900 px-4 py-2 rounded-lg font-semibold">🔍 НАЙТИ</button>
         </div>
     </div>
 
+    <!-- СПИСОК ОБЪЕКТОВ -->
     <div id="objectsList" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="text-center py-10 text-gray-500 col-span-3">Загрузка...</div>
+        <div class="text-center py-10 text-gray-500 col-span-3 text-base">ЗАГРУЗКА...</div>
     </div>
 </main>
 
+<!-- ФОРМА СВЯЗИ -->
 <section id="contact" class="bg-gray-900 text-white py-12 mt-8">
     <div class="max-w-3xl mx-auto px-4 text-center">
-        <h2 class="text-2xl font-bold mb-4">Бесплатная консультация</h2>
-        <p class="mb-6">Оставьте заявку — я перезвоню в течение часа</p>
+        <h2 class="text-2xl font-bold mb-4">БЕСПЛАТНАЯ КОНСУЛЬТАЦИЯ</h2>
+        <p class="mb-6 text-base">ОСТАВЬТЕ ЗАЯВКУ — Я ПЕРЕЗВОНЮ В ТЕЧЕНИЕ ЧАСА</p>
         <form id="leadForm" class="flex flex-col md:flex-row gap-3">
-            <input type="text" id="leadName" placeholder="Ваше имя" required class="flex-1 bg-white/20 text-white placeholder-white/70 px-4 py-3 rounded-xl">
-            <input type="tel" id="leadPhone" placeholder="Телефон" required class="flex-1 bg-white/20 text-white placeholder-white/70 px-4 py-3 rounded-xl">
-            <button type="submit" class="btn-gold text-gray-900 px-6 py-3 rounded-xl font-semibold">Отправить</button>
+            <input type="text" id="leadName" placeholder="ВАШЕ ИМЯ" required class="flex-1 bg-white/20 text-white placeholder-white/70 px-4 py-3 rounded-xl text-base">
+            <input type="tel" id="leadPhone" placeholder="ТЕЛЕФОН" required class="flex-1 bg-white/20 text-white placeholder-white/70 px-4 py-3 rounded-xl text-base">
+            <button type="submit" class="btn-gold text-gray-900 px-6 py-3 rounded-xl font-semibold text-base">ОТПРАВИТЬ</button>
         </form>
-        <div class="flex justify-center gap-4 mt-6">
-            <a href="tel:89607635170" class="text-white"><i class="fas fa-phone"></i> +7 (960) 763-51-70</a>
-            <a href="mailto:marigoda68@mail.ru" class="text-white"><i class="far fa-envelope"></i> marigoda68@mail.ru</a>
+        <div class="flex justify-center gap-4 mt-6 flex-wrap">
+            <a href="tel:89607635170" class="text-white text-base"><i class="fas fa-phone"></i> +7 (960) 763-51-70</a>
+            <a href="mailto:marigoda68@mail.ru" class="text-white text-base"><i class="far fa-envelope"></i> marigoda68@mail.ru</a>
         </div>
     </div>
 </section>
 
 <script>
-    const API_URL = 'https://script.google.com/macros/s/AKfycbzSgA18PGRrjVO2fKMtfNp7gfOpv0gdiJIrXe9vEG_95gvTxDwM2zfVAOTZ2DqoYnBZ/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbzLE7IFiWI-aH9cTgPkT1AGmAwUym4ggyZIvD7UdD3CJXxf6UT7mlOLwV7PNQx28IuX/exec';
     
     async function loadObjects() {
         const address = document.getElementById('filterAddress').value.toLowerCase();
@@ -92,7 +101,7 @@
                 renderObjects(objects);
             }
         } catch(e) {
-            console.error(e);
+            document.getElementById('objectsList').innerHTML = '<div class="text-center py-10 text-red-500 col-span-3">❌ ОШИБКА ЗАГРУЗКИ</div>';
         }
     }
     
@@ -100,7 +109,7 @@
         const container = document.getElementById('objectsList');
         
         if (objects.length === 0) {
-            container.innerHTML = '<div class="text-center py-10 text-gray-500 col-span-3">🏠 Нет объектов</div>';
+            container.innerHTML = '<div class="text-center py-10 text-gray-500 col-span-3 text-base">🏠 НЕТ ОБЪЕКТОВ</div>';
             return;
         }
         
@@ -110,20 +119,21 @@
                     <i class="fas fa-home text-gray-400 text-5xl"></i>
                 </div>
                 <div class="p-4">
-                    <h3 class="font-bold text-lg text-gray-800">${obj.Адрес || 'Адрес не указан'}</h3>
-                    <p class="text-2xl font-bold text-gold mt-1">${Number(obj.Цена).toLocaleString()} ₽</p>
+                    <h3 class="font-bold text-xl text-gray-800">${obj.Адрес || 'АДРЕС НЕ УКАЗАН'}</h3>
+                    <p class="text-3xl font-bold text-gold mt-1">${Number(obj.Цена).toLocaleString()} ₽</p>
                     <div class="flex gap-3 mt-2 text-sm text-gray-600">
-                        <span><i class="fas fa-door-open"></i> ${obj.Комнат || '?'} комн.</span>
-                        <span><i class="fas fa-layer-group"></i> ${obj.Этаж || '?'}/${obj.Всего_этажей || '?'} эт.</span>
+                        <span><i class="fas fa-door-open"></i> ${obj.Комнат || '?'} КОМН.</span>
+                        <span><i class="fas fa-layer-group"></i> ${obj.Этаж || '?'}/${obj.Всего_этажей || '?'} ЭТ.</span>
                         <span><i class="fas fa-ruler-combined"></i> ${obj.Площадь || '?'} м²</span>
                     </div>
-                    ${obj.Яндекс_папка ? `<div class="mt-2 text-xs text-blue-500">📁 <a href="${obj.Яндекс_папка}" target="_blank">Смотреть фото</a></div>` : ''}
-                    <a href="object.html?id=${obj.ID}" class="block w-full mt-4 btn-gold text-gray-900 py-2 rounded-lg font-semibold text-center">🔍 Подробнее</a>
+                    ${obj.Яндекс_папка ? `<div class="mt-2 text-sm text-blue-500">📁 <a href="${obj.Яндекс_папка}" target="_blank">СМОТРЕТЬ ФОТО</a></div>` : ''}
+                    <a href="object.html?id=${obj.ID}" class="block w-full mt-4 btn-gold text-gray-900 py-2 rounded-lg font-semibold text-center text-base">🔍 ПОДРОБНЕЕ</a>
                 </div>
             </div>
         `).join('');
     }
     
+    // ФОРМА ЗАЯВКИ
     const leadForm = document.getElementById('leadForm');
     if (leadForm) {
         leadForm.addEventListener('submit', async (e) => {
@@ -133,17 +143,17 @@
             
             try {
                 await fetch(`${API_URL}?action=addLead&name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}`);
-                showToast('✅ Заявка отправлена! Я свяжусь с вами.');
+                showToast('✅ ЗАЯВКА ОТПРАВЛЕНА! Я СВЯЖУСЬ С ВАМИ.');
                 leadForm.reset();
             } catch(e) {
-                showToast('Ошибка. Позвоните по телефону.');
+                showToast('❌ ОШИБКА. ПОЗВОНИТЕ ПО ТЕЛЕФОНУ.');
             }
         });
     }
     
     function showToast(msg) {
         const toast = document.createElement('div');
-        toast.className = 'fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-full text-sm z-50';
+        toast.className = 'fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-5 py-2 rounded-full text-base z-50';
         toast.textContent = msg;
         document.body.appendChild(toast);
         setTimeout(() => toast.remove(), 3000);
