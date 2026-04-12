@@ -10,8 +10,6 @@
         .btn-gold { background-color: #f5b042; }
         .btn-gold:hover { background-color: #e09e2e; }
         .text-gold { color: #f5b042; }
-        .gallery { display: flex; gap: 8px; overflow-x: auto; margin-top: 8px; }
-        .gallery img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; cursor: pointer; }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -120,23 +118,10 @@
                         <span><i class="fas fa-ruler-combined"></i> ${obj.Площадь || '?'} м²</span>
                     </div>
                     ${obj.Яндекс_папка ? `<div class="mt-2 text-xs text-blue-500">📁 <a href="${obj.Яндекс_папка}" target="_blank">Смотреть фото</a></div>` : ''}
-                    <button onclick="showContactForm('${obj.Адрес}')" class="w-full mt-4 btn-gold text-gray-900 py-2 rounded-lg font-semibold">📞 Узнать подробнее</button>
+                    <a href="object.html?id=${obj.ID}" class="block w-full mt-4 btn-gold text-gray-900 py-2 rounded-lg font-semibold text-center">🔍 Подробнее</a>
                 </div>
             </div>
         `).join('');
-    }
-    
-    function showContactForm(address) {
-        document.getElementById('leadForm').scrollIntoView({ behavior: 'smooth' });
-        showToast(`Отправьте заявку на квартиру: ${address}`);
-    }
-    
-    function showToast(msg) {
-        const toast = document.createElement('div');
-        toast.className = 'fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-full text-sm z-50';
-        toast.textContent = msg;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
     }
     
     const leadForm = document.getElementById('leadForm');
@@ -154,6 +139,14 @@
                 showToast('Ошибка. Позвоните по телефону.');
             }
         });
+    }
+    
+    function showToast(msg) {
+        const toast = document.createElement('div');
+        toast.className = 'fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-full text-sm z-50';
+        toast.textContent = msg;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
     }
     
     loadObjects();
