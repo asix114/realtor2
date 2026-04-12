@@ -134,4 +134,32 @@
     
     function showToast(msg) {
         const toast = document.createElement('div');
-        toast.className = 'fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-full text-sm z-
+        toast.className = 'fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-full text-sm z-50';
+        toast.textContent = msg;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+    
+    // Отправка заявки
+    const leadForm = document.getElementById('leadForm');
+    if (leadForm) {
+        leadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('leadName').value;
+            const phone = document.getElementById('leadPhone').value;
+            const objectId = getObjectId();
+            
+            try {
+                await fetch(`${API_URL}?action=addLead&name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&object=${encodeURIComponent(objectId)}`);
+                showToast('✅ Заявка отправлена! Я свяжусь с вами.');
+                leadForm.reset();
+            } catch(e) {
+                showToast('Ошибка. Позвоните по телефону.');
+            }
+        });
+    }
+    
+    loadObject();
+</script>
+</body>
+</html>
