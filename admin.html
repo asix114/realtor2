@@ -18,182 +18,161 @@
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; }
         .modal.active { display: flex; }
         .private-field { background: #fef3c7; border-left: 3px solid #f5b042; }
+        .documents-field { background: #e0f2fe; border-left: 3px solid #0284c7; margin-top: 16px; }
         .photo-preview { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
         .photo-preview img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
+        label { font-weight: 600; font-size: 14px; }
+        input, select, textarea { font-size: 16px; padding: 10px; }
+        @media (max-width: 640px) {
+            .modal-content { width: 95%; margin: 10px; }
+        }
     </style>
 </head>
 <body class="bg-gray-100">
 
-<div class="toast" id="toast">✅ Готово!</div>
+<div class="toast" id="toast">✅ ГОТОВО!</div>
 
 <header class="bg-white shadow-sm sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center flex-wrap gap-2">
         <div class="flex items-center gap-3">
-            <img src="логотип недвижка золотой.png" alt="Лого" class="h-8 w-auto">
+            <img src="логотип недвижка золотой.png" alt="Лого" class="h-10 w-auto">
             <div>
-                <h1 class="text-lg font-bold text-gray-800">CRM Риэлтора</h1>
+                <h1 class="text-xl font-bold text-gray-800">CRM РИЭЛТОРА</h1>
                 <p class="text-xs text-gray-500">Управление объектами</p>
             </div>
         </div>
         <div class="flex gap-2">
-            <a href="catalog.html" class="text-gray-600 hover:text-gold px-3 py-1 text-sm">📋 Каталог</a>
-            <a href="index.html" class="text-gray-600 hover:text-gold px-3 py-1 text-sm">🏠 Лендинг</a>
+            <a href="catalog.html" class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg text-sm font-semibold">📋 КАТАЛОГ</a>
+            <a href="index.html" class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg text-sm font-semibold">🏠 ЛЕНДИНГ</a>
         </div>
     </div>
 </header>
 
 <main class="max-w-7xl mx-auto px-4 py-6">
-    <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold text-gray-800">📦 Объекты недвижимости</h2>
-        <button onclick="openAddModal()" class="btn-gold text-gray-900 px-4 py-2 rounded-lg font-semibold flex items-center gap-2">
-            <i class="fas fa-plus"></i> Добавить объект
-        </button>
+    <div class="flex justify-between items-center mb-6 flex-wrap gap-2">
+        <h2 class="text-2xl font-bold text-gray-800">📦 ОБЪЕКТЫ НЕДВИЖИМОСТИ</h2>
+        <button onclick="openAddModal()" class="btn-gold text-gray-900 px-5 py-2 rounded-lg font-semibold text-base">➕ ДОБАВИТЬ ОБЪЕКТ</button>
     </div>
 
     <div class="bg-white rounded-xl p-4 mb-6 shadow-sm">
         <div class="flex flex-wrap gap-3">
-            <select id="filterStatus" class="border rounded-lg px-3 py-2 text-sm">
-                <option value="all">Все статусы</option>
-                <option value="активно">Активно</option>
-                <option value="продано">Продано</option>
-                <option value="в резерве">В резерве</option>
+            <select id="filterStatus" class="border rounded-lg px-3 py-2 text-base">
+                <option value="all">ВСЕ СТАТУСЫ</option>
+                <option value="активно">АКТИВНО</option>
+                <option value="продано">ПРОДАНО</option>
+                <option value="в резерве">В РЕЗЕРВЕ</option>
             </select>
-            <input type="text" id="filterSearch" placeholder="Поиск по адресу..." class="border rounded-lg px-3 py-2 text-sm flex-1">
-            <button onclick="loadObjects()" class="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm">🔍 Поиск</button>
+            <input type="text" id="filterSearch" placeholder="ПОИСК ПО АДРЕСУ..." class="border rounded-lg px-3 py-2 text-base flex-1">
+            <button onclick="loadObjects()" class="bg-gray-800 text-white px-5 py-2 rounded-lg text-base">🔍 НАЙТИ</button>
         </div>
     </div>
 
     <div id="objectsList" class="space-y-3">
-        <div class="text-center py-10 text-gray-500">Загрузка...</div>
+        <div class="text-center py-10 text-gray-500">ЗАГРУЗКА...</div>
     </div>
 </main>
 
 <div id="objectModal" class="modal">
     <div class="bg-white rounded-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto m-4">
         <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
-            <h3 id="modalTitle" class="text-xl font-bold">➕ Новый объект</h3>
-            <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            <h3 id="modalTitle" class="text-xl font-bold">➕ НОВЫЙ ОБЪЕКТ</h3>
+            <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700 text-3xl">&times;</button>
         </div>
         <div class="p-6 space-y-4">
             <input type="hidden" id="objectId">
             
+            <!-- ОСНОВНАЯ ИНФОРМАЦИЯ -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="md:col-span-2">
-                    <label class="block text-sm font-medium mb-1">Адрес *</label>
+                    <label>🏠 АДРЕС *</label>
                     <input type="text" id="address" class="w-full border rounded-lg px-3 py-2" placeholder="ул. Ленина, д. 10">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-1">Номер квартиры</label>
-                    <input type="text" id="apartment" class="w-full border rounded-lg px-3 py-2 bg-yellow-50" placeholder="45 (скрыто)">
-                    <p class="text-xs text-gray-400 mt-1">🔒 Видно только в CRM</p>
+                    <label>🔒 НОМЕР КВАРТИРЫ (СКРЫТО)</label>
+                    <input type="text" id="apartment" class="w-full border rounded-lg px-3 py-2 bg-yellow-50" placeholder="45">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-1">Цена (₽) *</label>
+                    <label>💰 ЦЕНА (₽) *</label>
                     <input type="number" id="price" class="w-full border rounded-lg px-3 py-2" placeholder="3 500 000">
                 </div>
             </div>
 
+            <!-- ХАРАКТЕРИСТИКИ -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div>
-                    <label class="block text-sm font-medium mb-1">Комнат</label>
-                    <input type="number" id="rooms" class="w-full border rounded-lg px-3 py-2" placeholder="2">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Этаж</label>
-                    <input type="text" id="floor" class="w-full border rounded-lg px-3 py-2" placeholder="5">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Всего этажей</label>
-                    <input type="text" id="totalFloors" class="w-full border rounded-lg px-3 py-2" placeholder="9">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Площадь (м²)</label>
-                    <input type="text" id="area" class="w-full border rounded-lg px-3 py-2" placeholder="48">
-                </div>
+                <div><label>КОМНАТ</label><input type="number" id="rooms" class="w-full border rounded-lg px-3 py-2" placeholder="2"></div>
+                <div><label>ЭТАЖ</label><input type="text" id="floor" class="w-full border rounded-lg px-3 py-2" placeholder="5"></div>
+                <div><label>ВСЕГО ЭТАЖЕЙ</label><input type="text" id="totalFloors" class="w-full border rounded-lg px-3 py-2" placeholder="9"></div>
+                <div><label>ПЛОЩАДЬ (м²)</label><input type="text" id="area" class="w-full border rounded-lg px-3 py-2" placeholder="48"></div>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium mb-1">Балкон/Лоджия</label>
-                    <select id="balcony" class="w-full border rounded-lg px-3 py-2">
-                        <option value="">Нет</option>
-                        <option value="балкон">Балкон</option>
-                        <option value="лоджия">Лоджия</option>
-                        <option value="2 балкона">2 балкона</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Тип дома</label>
-                    <select id="houseType" class="w-full border rounded-lg px-3 py-2">
-                        <option value="панельный">Панельный</option>
-                        <option value="кирпичный">Кирпичный</option>
-                        <option value="монолитный">Монолитный</option>
-                        <option value="хрущёвка">Хрущёвка</option>
-                    </select>
-                </div>
+                <div><label>БАЛКОН/ЛОДЖИЯ</label><select id="balcony" class="w-full border rounded-lg px-3 py-2"><option value="">НЕТ</option><option value="балкон">БАЛКОН</option><option value="лоджия">ЛОДЖИЯ</option><option value="2 балкона">2 БАЛКОНА</option></select></div>
+                <div><label>ТИП ДОМА</label><select id="houseType" class="w-full border rounded-lg px-3 py-2"><option value="панельный">ПАНЕЛЬНЫЙ</option><option value="кирпичный">КИРПИЧНЫЙ</option><option value="монолитный">МОНОЛИТНЫЙ</option><option value="хрущёвка">ХРУЩЁВКА</option></select></div>
             </div>
 
-            <!-- Ссылка на папку Яндекс Диска -->
+            <!-- ЯНДЕКС ПАПКА -->
             <div>
-                <label class="block text-sm font-medium mb-1">📁 Ссылка на папку с фото (Яндекс Диск)</label>
+                <label>📁 ССЫЛКА НА ПАПКУ ЯНДЕКС ДИСК (ФОТО)</label>
                 <input type="text" id="yandexFolderUrl" class="w-full border rounded-lg px-3 py-2" placeholder="https://disk.yandex.ru/d/xxxx">
-                <p class="text-xs text-gray-400 mt-1">Вставьте одну ссылку на папку — все фото подгрузятся автоматически</p>
+                <p class="text-xs text-gray-400 mt-1">ВСТАВЬТЕ ССЫЛКУ НА ПАПКУ — ФОТО ПОДГРУЗЯТСЯ АВТОМАТИЧЕСКИ</p>
             </div>
 
+            <!-- ОПИСАНИЕ -->
             <div>
-                <label class="block text-sm font-medium mb-1">Описание для покупателей</label>
+                <label>📝 ОПИСАНИЕ ДЛЯ ПОКУПАТЕЛЕЙ</label>
                 <textarea id="description" rows="3" class="w-full border rounded-lg px-3 py-2" placeholder="Просторная квартира, свежий ремонт..."></textarea>
             </div>
 
+            <!-- КОНФИДЕНЦИАЛЬНАЯ ИНФОРМАЦИЯ -->
             <div class="private-field p-4 rounded-lg">
-                <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fas fa-lock text-gold"></i> Конфиденциальная информация</h4>
+                <h4 class="font-bold text-gray-800 mb-3 text-lg">🔒 КОНФИДЕНЦИАЛЬНО (ВИДНО ТОЛЬКО ВАМ)</h4>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium mb-1">ФИО собственника</label>
-                        <input type="text" id="ownerName" class="w-full border rounded-lg px-3 py-2" placeholder="Иванов Иван Иванович">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Телефон собственника</label>
-                        <input type="text" id="ownerPhone" class="w-full border rounded-lg px-3 py-2" placeholder="+7 XXX XXX-XX-XX">
-                    </div>
+                    <div><label>ФИО СОБСТВЕННИКА</label><input type="text" id="ownerName" class="w-full border rounded-lg px-3 py-2" placeholder="Иванов Иван Иванович"></div>
+                    <div><label>ТЕЛЕФОН СОБСТВЕННИКА</label><input type="text" id="ownerPhone" class="w-full border rounded-lg px-3 py-2" placeholder="+7 XXX XXX-XX-XX"></div>
                 </div>
                 
                 <div class="grid grid-cols-2 gap-4 mt-3">
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Вознаграждение (%)</label>
-                        <input type="text" id="commissionPercent" class="w-full border rounded-lg px-3 py-2" placeholder="3">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Вознаграждение (фикс, ₽)</label>
-                        <input type="text" id="commissionFixed" class="w-full border rounded-lg px-3 py-2" placeholder="50 000">
-                    </div>
+                    <div><label>ВОЗНАГРАЖДЕНИЕ (%)</label><input type="text" id="commissionPercent" class="w-full border rounded-lg px-3 py-2" placeholder="3"></div>
+                    <div><label>ВОЗНАГРАЖДЕНИЕ (ФИКС, ₽)</label><input type="text" id="commissionFixed" class="w-full border rounded-lg px-3 py-2" placeholder="50 000"></div>
                 </div>
                 
-                <div class="mt-3">
-                    <label class="block text-sm font-medium mb-1">Комментарий для себя</label>
-                    <textarea id="privateNote" rows="2" class="w-full border rounded-lg px-3 py-2" placeholder="Особые условия, ключи, документы..."></textarea>
+                <div><label>ЗАМЕТКИ ДЛЯ СЕБЯ</label><textarea id="privateNote" rows="2" class="w-full border rounded-lg px-3 py-2" placeholder="Особые условия, ключи, документы..."></textarea></div>
+            </div>
+
+            <!-- ДОКУМЕНТЫ (НОВЫЙ БЛОК) -->
+            <div class="documents-field p-4 rounded-lg">
+                <h4 class="font-bold text-gray-800 mb-3 text-lg">📄 ДОКУМЕНТЫ ПО ОБЪЕКТУ (СКРЫТО ОТ КЛИЕНТОВ)</h4>
+                <p class="text-xs text-gray-500 mb-2">ВСТАВЬТЕ ССЫЛКИ НА ФАЙЛЫ ИЗ ЯНДЕКС ДИСКА</p>
+                
+                <div class="grid grid-cols-1 gap-3">
+                    <div><label>📄 ЕГРН (ссылку на файл)</label><input type="text" id="egrn" class="w-full border rounded-lg px-3 py-2" placeholder="https://disk.yandex.ru/..."></div>
+                    <div><label>📄 ДОГОВОР КУПЛИ-ПРОДАЖИ</label><input type="text" id="dogovor" class="w-full border rounded-lg px-3 py-2" placeholder="https://disk.yandex.ru/..."></div>
+                    <div><label>📄 ПАСПОРТ СОБСТВЕННИКА</label><input type="text" id="passport" class="w-full border rounded-lg px-3 py-2" placeholder="https://disk.yandex.ru/..."></div>
+                    <div><label>📄 ДОВЕРЕННОСТЬ</label><input type="text" id="doverennost" class="w-full border rounded-lg px-3 py-2" placeholder="https://disk.yandex.ru/..."></div>
+                    <div><label>📄 ДРУГИЕ ДОКУМЕНТЫ</label><input type="text" id="otherDocs" class="w-full border rounded-lg px-3 py-2" placeholder="https://disk.yandex.ru/..."></div>
                 </div>
             </div>
 
+            <!-- СТАТУС -->
             <div>
-                <label class="block text-sm font-medium mb-1">Статус</label>
+                <label>СТАТУС</label>
                 <select id="status" class="w-full border rounded-lg px-3 py-2">
-                    <option value="активно">Активно</option>
-                    <option value="в резерве">В резерве</option>
-                    <option value="продано">Продано</option>
+                    <option value="активно">АКТИВНО</option>
+                    <option value="в резерве">В РЕЗЕРВЕ</option>
+                    <option value="продано">ПРОДАНО</option>
                 </select>
             </div>
         </div>
         <div class="border-t px-6 py-4 flex justify-end gap-3">
-            <button onclick="closeModal()" class="px-4 py-2 border rounded-lg">Отмена</button>
-            <button onclick="saveObject()" class="btn-gold text-gray-900 px-4 py-2 rounded-lg font-semibold">Сохранить</button>
+            <button onclick="closeModal()" class="px-5 py-2 border rounded-lg text-base">ОТМЕНА</button>
+            <button onclick="saveObject()" class="btn-gold text-gray-900 px-5 py-2 rounded-lg font-semibold text-base">СОХРАНИТЬ</button>
         </div>
     </div>
 </div>
 
 <script>
-    const API_URL = 'https://script.google.com/macros/s/AKfycbzSgA18PGRrjVO2fKMtfNp7gfOpv0gdiJIrXe9vEG_95gvTxDwM2zfVAOTZ2DqoYnBZ/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbzLE7IFiWI-aH9cTgPkT1AGmAwUym4ggyZIvD7UdD3CJXxf6UT7mlOLwV7PNQx28IuX/exec';
     
     let objects = [];
     let editId = null;
@@ -202,7 +181,7 @@
         const toast = document.getElementById('toast');
         toast.textContent = msg;
         toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 2000);
+        setTimeout(() => toast.classList.remove('show'), 3000);
     }
 
     async function loadObjects() {
@@ -219,16 +198,18 @@
                 if (filterStatus !== 'all') filtered = filtered.filter(obj => obj.Статус === filterStatus);
                 if (filterSearch) filtered = filtered.filter(obj => obj.Адрес?.toLowerCase().includes(filterSearch));
                 renderObjects(filtered);
+            } else {
+                showToast('ОШИБКА ЗАГРУЗКИ');
             }
         } catch(e) {
-            showToast('Ошибка загрузки');
+            showToast('ОШИБКА СОЕДИНЕНИЯ');
         }
     }
 
     function renderObjects(objectsList) {
         const container = document.getElementById('objectsList');
         if (objectsList.length === 0) {
-            container.innerHTML = '<div class="text-center py-10 text-gray-500">📭 Нет объектов</div>';
+            container.innerHTML = '<div class="text-center py-10 text-gray-500">📭 НЕТ ОБЪЕКТОВ</div>';
             return;
         }
         
@@ -236,28 +217,28 @@
             <div class="bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition">
                 <div class="flex flex-col md:flex-row gap-4">
                     <div class="w-full md:w-32 h-32 bg-gray-200 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-home text-gray-400 text-3xl"></i>
+                        <i class="fas fa-home text-gray-400 text-4xl"></i>
                     </div>
                     <div class="flex-1">
                         <div class="flex justify-between items-start flex-wrap gap-2">
-                            <h3 class="text-lg font-bold text-gray-800">${obj.Адрес || 'Без адреса'}</h3>
-                            <span class="px-2 py-1 rounded-full text-xs font-semibold status-${obj.Статус === 'активно' ? 'active' : (obj.Статус === 'продано' ? 'sold' : 'reserved')}">${obj.Статус || 'активно'}</span>
+                            <h3 class="text-xl font-bold text-gray-800">${obj.Адрес || 'БЕЗ АДРЕСА'}</h3>
+                            <span class="px-3 py-1 rounded-full text-sm font-semibold status-${obj.Статус === 'активно' ? 'active' : (obj.Статус === 'продано' ? 'sold' : 'reserved')}">${obj.Статус || 'АКТИВНО'}</span>
                         </div>
                         <p class="text-2xl font-bold text-gold mt-1">${Number(obj.Цена).toLocaleString()} ₽</p>
                         <div class="flex flex-wrap gap-3 mt-2 text-sm text-gray-600">
-                            <span><i class="fas fa-door-open"></i> ${obj.Комнат || '?'} комн.</span>
-                            <span><i class="fas fa-layer-group"></i> ${obj.Этаж || '?'}/${obj.Всего_этажей || '?'} эт.</span>
+                            <span><i class="fas fa-door-open"></i> ${obj.Комнат || '?'} КОМН.</span>
+                            <span><i class="fas fa-layer-group"></i> ${obj.Этаж || '?'}/${obj.Всего_этажей || '?'} ЭТ.</span>
                             <span><i class="fas fa-ruler-combined"></i> ${obj.Площадь || '?'} м²</span>
                             ${obj.Балкон ? `<span><i class="fas fa-umbrella"></i> ${obj.Балкон}</span>` : ''}
                         </div>
                         <div class="flex gap-2 mt-3 flex-wrap">
-                            <button onclick="editObject(${obj.ID})" class="text-blue-600 text-sm"><i class="fas fa-edit"></i> Ред.</button>
-                            <button onclick="sendPresentation(${obj.ID})" class="text-green-600 text-sm"><i class="fas fa-share-alt"></i> Презентация</button>
-                            <button onclick="exportToAd(${obj.ID})" class="text-purple-600 text-sm"><i class="fas fa-megaphone"></i> В рекламу</button>
-                            <button onclick="changeStatus(${obj.ID}, 'продано')" class="text-red-600 text-sm"><i class="fas fa-check-circle"></i> Продано</button>
+                            <button onclick="editObject(${obj.ID})" class="bg-blue-600 text-white px-3 py-1 rounded-lg text-sm">✏️ РЕДАКТ.</button>
+                            <button onclick="sendPresentation(${obj.ID})" class="bg-green-600 text-white px-3 py-1 rounded-lg text-sm">📤 ПРЕЗЕНТАЦИЯ</button>
+                            <button onclick="exportToAd(${obj.ID})" class="bg-purple-600 text-white px-3 py-1 rounded-lg text-sm">📢 В РЕКЛАМУ</button>
+                            <button onclick="changeStatus(${obj.ID}, 'продано')" class="bg-red-600 text-white px-3 py-1 rounded-lg text-sm">✅ ПРОДАНО</button>
                         </div>
-                        ${obj.Номер_квартиры ? `<div class="mt-2 text-xs text-gray-400">🔒 кв. ${obj.Номер_квартиры}</div>` : ''}
-                        ${obj.Яндекс_папка ? `<div class="mt-1 text-xs text-gray-400">📁 <a href="${obj.Яндекс_папка}" target="_blank">Папка с фото</a></div>` : ''}
+                        ${obj.Номер_квартиры ? `<div class="mt-2 text-sm text-gray-400">🔒 КВ. ${obj.Номер_квартиры}</div>` : ''}
+                        ${obj.Яндекс_папка ? `<div class="mt-1 text-sm text-blue-500">📁 <a href="${obj.Яндекс_папка}" target="_blank">ПАПКА С ФОТО</a></div>` : ''}
                     </div>
                 </div>
             </div>
@@ -269,18 +250,18 @@
         if (!obj) return;
         
         const presentationText = `🏠 ОБЪЕКТ НЕДВИЖИМОСТИ
-📍 Адрес: ${obj.Адрес}
-💰 Цена: ${Number(obj.Цена).toLocaleString()} ₽
-📐 Характеристики:
-   • Комнат: ${obj.Комнат || '?'}
-   • Этаж: ${obj.Этаж || '?'}/${obj.Всего_этажей || '?'}
-   • Площадь: ${obj.Площадь || '?'} м²
-   • Балкон: ${obj.Балкон || 'нет'}
-📝 Описание: ${obj.Описание || 'Уточняйте'}
-📁 Фото: ${obj.Яндекс_папка || 'нет'}`;
+📍 АДРЕС: ${obj.Адрес}
+💰 ЦЕНА: ${Number(obj.Цена).toLocaleString()} ₽
+📐 ХАРАКТЕРИСТИКИ:
+   • КОМНАТ: ${obj.Комнат || '?'}
+   • ЭТАЖ: ${obj.Этаж || '?'}/${obj.Всего_этажей || '?'}
+   • ПЛОЩАДЬ: ${obj.Площадь || '?'} м²
+   • БАЛКОН: ${obj.Балкон || 'НЕТ'}
+📝 ОПИСАНИЕ: ${obj.Описание || 'УТОЧНЯЙТЕ'}
+📁 ФОТО: ${obj.Яндекс_папка || 'НЕТ'}`;
         
         navigator.clipboard.writeText(presentationText);
-        showToast('✅ Презентация скопирована! Отправьте клиенту');
+        showToast('✅ ПРЕЗЕНТАЦИЯ СКОПИРОВАНА! ОТПРАВЬТЕ КЛИЕНТУ');
     }
 
     function exportToAd(id) {
@@ -290,22 +271,22 @@
         const adText = `${obj.Адрес}
 ${Number(obj.Цена).toLocaleString()} ₽
 
-${obj.Комнат}-комнатная квартира, ${obj.Площадь} м², ${obj.Этаж}/${obj.Всего_этажей} этаж
+${obj.Комнат}-КОМНАТНАЯ КВАРТИРА, ${obj.Площадь} м², ${obj.Этаж}/${obj.Всего_этажей} ЭТАЖ
 
-${obj.Балкон ? `Балкон/лоджия: ${obj.Балкон}` : ''}
+${obj.Балкон ? `БАЛКОН/ЛОДЖИЯ: ${obj.Балкон}` : ''}
 
 ${obj.Описание || ''}
 
-📞 Звоните: +7 (960) 763-51-70
-Людмила Мельверт, риэлтор`;
+📞 ЗВОНИТЕ: +7 (960) 763-51-70
+ЛЮДМИЛА МЕЛЬВЕРТ, РИЭЛТОР`;
         
         navigator.clipboard.writeText(adText);
-        showToast('✅ Текст для рекламы скопирован!');
+        showToast('✅ ТЕКСТ ДЛЯ РЕКЛАМЫ СКОПИРОВАН!');
     }
 
     function openAddModal() {
         editId = null;
-        document.getElementById('modalTitle').innerText = '➕ Новый объект';
+        document.getElementById('modalTitle').innerText = '➕ НОВЫЙ ОБЪЕКТ';
         document.getElementById('objectId').value = '';
         document.getElementById('address').value = '';
         document.getElementById('apartment').value = '';
@@ -323,6 +304,11 @@ ${obj.Описание || ''}
         document.getElementById('commissionPercent').value = '';
         document.getElementById('commissionFixed').value = '';
         document.getElementById('privateNote').value = '';
+        document.getElementById('egrn').value = '';
+        document.getElementById('dogovor').value = '';
+        document.getElementById('passport').value = '';
+        document.getElementById('doverennost').value = '';
+        document.getElementById('otherDocs').value = '';
         document.getElementById('status').value = 'активно';
         document.getElementById('objectModal').classList.add('active');
     }
@@ -332,7 +318,7 @@ ${obj.Описание || ''}
         if (!obj) return;
         
         editId = id;
-        document.getElementById('modalTitle').innerText = '✏️ Редактировать объект';
+        document.getElementById('modalTitle').innerText = '✏️ РЕДАКТИРОВАТЬ ОБЪЕКТ';
         document.getElementById('objectId').value = id;
         document.getElementById('address').value = obj.Адрес || '';
         document.getElementById('apartment').value = obj.Номер_квартиры || '';
@@ -350,6 +336,11 @@ ${obj.Описание || ''}
         document.getElementById('commissionPercent').value = obj.Комиссия_процент || '';
         document.getElementById('commissionFixed').value = obj.Комиссия_фикс || '';
         document.getElementById('privateNote').value = obj.Заметки || '';
+        document.getElementById('egrn').value = obj.ЕГРН_ссылка || '';
+        document.getElementById('dogovor').value = obj.Договор_ссылка || '';
+        document.getElementById('passport').value = obj.Паспорт_ссылка || '';
+        document.getElementById('doverennost').value = obj.Доверенность_ссылка || '';
+        document.getElementById('otherDocs').value = obj.Другие_документы || '';
         document.getElementById('status').value = obj.Статус || 'активно';
         document.getElementById('objectModal').classList.add('active');
     }
@@ -359,7 +350,7 @@ ${obj.Описание || ''}
         const price = document.getElementById('price').value;
         
         if (!address || !price) {
-            showToast('Заполните адрес и цену');
+            showToast('ЗАПОЛНИТЕ АДРЕС И ЦЕНУ');
             return;
         }
         
@@ -381,6 +372,11 @@ ${obj.Описание || ''}
         params.append('commissionPercent', document.getElementById('commissionPercent').value);
         params.append('commissionFixed', document.getElementById('commissionFixed').value);
         params.append('privateNote', document.getElementById('privateNote').value);
+        params.append('egrn', document.getElementById('egrn').value);
+        params.append('dogovor', document.getElementById('dogovor').value);
+        params.append('passport', document.getElementById('passport').value);
+        params.append('doverennost', document.getElementById('doverennost').value);
+        params.append('otherDocs', document.getElementById('otherDocs').value);
         params.append('status', document.getElementById('status').value);
         
         try {
@@ -388,24 +384,24 @@ ${obj.Описание || ''}
             const data = await response.json();
             
             if (data.status === 'success') {
-                showToast('Объект сохранён');
+                showToast('✅ ОБЪЕКТ СОХРАНЁН');
                 closeModal();
                 loadObjects();
             } else {
-                showToast('Ошибка сохранения');
+                showToast('❌ ОШИБКА СОХРАНЕНИЯ');
             }
         } catch(e) {
-            showToast('Ошибка соединения');
+            showToast('❌ ОШИБКА СОЕДИНЕНИЯ');
         }
     }
 
     async function changeStatus(id, status) {
         try {
             await fetch(`${API_URL}?action=updateStatus&id=${id}&status=${status}`);
-            showToast(`Статус изменён на "${status}"`);
+            showToast(`✅ СТАТУС ИЗМЕНЁН НА "${status.toUpperCase()}"`);
             loadObjects();
         } catch(e) {
-            showToast('Ошибка');
+            showToast('❌ ОШИБКА');
         }
     }
 
