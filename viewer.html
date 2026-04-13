@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Просмотр объявлений | Парсер недвижимости</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        .card { transition: transform 0.2s; }
+        .card:hover { transform: translateY(-3px); }
+        .price { color: #f5b042; font-weight: bold; }
+        .source-badge { background: #e5e7eb; padding: 2px 8px; border-radius: 20px; font-size: 11px; }
+        .copy-btn { background: #f3f4f6; padding: 4px 10px; border-radius: 8px; font-size: 12px; cursor: pointer; }
+        .copy-btn:hover { background: #e5e7eb; }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+<div class="max-w-6xl mx-auto px-4 py-6">
+    <!-- ШАПКА -->
+    <div class="flex justify-between items-center mb-6 flex-wrap gap-3">
+        <div>
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800">🏠 ПАРСЕР НЕДВИЖИМОСТИ</h1>
+            <p class="text-gray-500 text-sm">Объявления из групп ВКонтакте (Шарыпово / Ужур)</p>
+        </div>
+        <div class="flex gap-2">
+            <button onclick="loadData()" class="bg-teal-500 text-white px-4 py-2 rounded-lg text-sm font-semibold">🔄 ОБНОВИТЬ</button>
+            <a href="admin.html" class="bg-gray-500 text-white px-4 py-2 rounded-lg text-sm font-semibold">📋 CRM</a>
+        </div>
+    </div>
+
+    <!-- СТАТУС ЗАГРУЗКИ -->
+    <div id="statusBar" class="bg-white rounded-xl p-3 mb-4 shadow-sm text-center text-gray-500">
+        ⏳ Нажмите «ОБНОВИТЬ», чтобы загрузить объявления
+    </div>
+
+    <!-- ФИЛЬТРЫ -->
+    <div class="bg-white rounded-xl p-4 mb-6 shadow-sm">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <input type="text" id="filterAddress" placeholder="Поиск по адресу/тексту" class="border rounded-lg px-3 py-2 text-sm">
+            <input type="text" id="filterPriceMax" placeholder="Макс. цена (₽)" class="border rounded-lg px-3 py-2 text-sm">
+            <select id="filterRooms" class="border rounded-lg px-3 py-2 text-sm">
+                <option value="">Все комнаты</option>
+                <option value="1">1 комната</option>
+                <option value="2">2 комнаты</option>
+                <option value="3">3 комнаты</option>
+            </select>
+            <button onclick="applyFilters()" class="btn-gold text-gray-900 px-4 py-2 rounded-lg font-semibold">🔍 ФИЛЬТР</button>
+        </div>
+    </div>
+
+    <!-- СПИСОК ОБЪЯВЛЕНИЙ (КАРТОЧКИ) -->
+    <div id="results" class="space-y-4">
+        <div class="text-center py-10 text-gray-500">Нет данных. Нажмите «ОБНОВИТЬ».</div>
+    </div>
+
+    <!-- КНОПКА НАВЕРХ -->
+    <button onclick="window.scrollTo({top:0,behavior:'smooth'})" class="fixed bottom-5 right-5 bg-teal-500 text-white p-3 rounded-full shadow-lg">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+</div>
+
+<script>
+    const PARSER_URL = 'http://localhost:3000';
+    let allResults = [];
+
+    async function loadData() {
+        const statusDiv = document.getElementById('statusBar');
+        const resultsDiv = document.getElementById('results');
+        
+        statusDiv.innerHTML = '<div class="text-center py-2"><i class="fas fa-spinner fa-spin"></i> ЗАГРУЗКА ОБЪЯВЛЕНИЙ...</div>';
+        resultsDiv.innerHTML = '<div class="text-center py-10 text-gray-500">⏳ ПАРСИНГ... ПОДОЖДИТЕ 10-20 СЕКУНД</div>';
+        
+        try {
+            const response = await fetch(`${PARSER_URL}/parse/vk?search=квартира`);
+            const data = await response.json();
+            
+            if (data.success && data.results.length > 0) {
+                allResults = data.results;
+                statusDiv.innerHTML = `<div class="text-center py-2 text-green-600">✅ НАЙДЕНО ${allResults.length} ОБЪЯВЛЕНИЙ О НЕДВИЖИМОСТИ</div>`;
+                renderResults(allResults);
+            } else {
+                statusDiv.innerHTML = '<div class="text-center py-2 text-red-500">❌ НИЧЕГО НЕ НАЙДЕНО</div>';
+                resultsDiv.innerHTML = '<div class="text-center py-10 text-gray-500">🏠 НЕТ ОБЪЯВЛЕНИЙ, СООТВЕТСТВУЮЩИХ КРИТЕРИЯМ</div>';
+            }
+        } catch(e) {
+            statusDiv.innerHTML = '<div class="text-center py-2 text-red-500">❌ ОШИБКА: ПАРСЕР НЕ ЗАПУЩЕН! ОТКРОЙТЕ ТЕРМИНАЛ И НАПИШИТЕ npm start</div>';
+            resultsDiv.innerHTML = '<div class="text-center py-10 text-red-500">⚠️ ПАРСЕР НЕ ДОСТУПЕН. ПРОВЕРЬТЕ, ЧТО ОН ЗАПУЩЕН НА ПОРТУ 3000</div>';
+        }
+    }
+
+    function renderResults(results) {
+        const container = document.getElementById('results');
+        
+        if (results.length === 0) {
+            container.innerHTML = '<div class="text-center py-10 text-gray-500">🏠 НЕТ ОБЪЯВЛЕНИЙ, СООТВЕТСТВУЮЩИХ ФИЛЬТРАМ</div>';
+            return;
+        }
+        
+        container.innerHTML = results.map((item, idx) => `
+            <div class="card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+                <div class="p-5">
+                    <!-- ЗАГОЛОВОК И ИСТОЧНИК -->
+                    <div class="flex justify-between items-start flex-wrap gap-2 mb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="source-badge"><i class="fab fa-vk text-blue-600"></i> ${item.source}</span>
+                            <span class="text-xs text-gray-400">📅 ${item.date || 'недавно'}</span>
+                        </div>
+                        <button onclick="copyToCRM(${idx})" class="copy-btn"><i class="fas fa-copy"></i> Копировать</button>
+                    </div>
+                    
+                    <!-- ОСНОВНАЯ ИНФОРМАЦИЯ -->
+                    <h3 class="text-lg font-bold text-gray-800 mt-1">${item.title}</h3>
+                    
+                    <div class="flex flex-wrap gap-3 mt-3">
+                        <span class="price text-2xl font-bold">${item.price}</span>
+                        ${item.rooms !== '?' ? `<span class="bg-gray-100 px-3 py-1 rounded-full text-sm"><i class="fas fa-door-open"></i> ${item.rooms} комн.</span>` : ''}
+                    </div>
+                    
+                    <p class="text-gray-600 text-sm mt-3 leading-relaxed">${item.description}</p>
+                    
+                    <!-- ВАШИ КОНТАКТЫ (ПОДМЕНА) -->
+                    <div class="mt-4 p-3 bg-teal-50 rounded-lg border border-teal-200">
+                        <p class="text-sm font-semibold text-teal-800"><i class="fas fa-phone"></i> КОНТАКТЫ ДЛЯ КЛИЕНТОВ (ПОДМЕНА):</p>
+                        <p class="text-base font-bold text-teal-900">${item.our_phone} — ${item.our_name}</p>
+                    </div>
+                    
+                    <!-- ССЫЛКА НА ОРИГИНАЛ -->
+                    <div class="mt-3 flex justify-between items-center flex-wrap gap-2">
+                        <a href="${item.url}" target="_blank" class="text-blue-500 text-sm hover:underline"><i class="fas fa-external-link-alt"></i> Оригинал объявления ВК</a>
+                        <button onclick="copyToCRM(${idx})" class="btn-gold text-gray-900 px-4 py-2 rounded-lg text-sm font-semibold">📋 ДОБАВИТЬ В CRM</button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function applyFilters() {
+        const searchText = document.getElementById('filterAddress').value.toLowerCase();
+        const priceMax = document.getElementById('filterPriceMax').value;
+        const rooms = document.getElementById('filterRooms').value;
+        
+        let filtered = [...allResults];
+        
+        if (searchText) {
+            filtered = filtered.filter(item => 
+                item.title.toLowerCase().includes(searchText) || 
+                item.description.toLowerCase().includes(searchText)
+            );
+        }
+        
+        if (priceMax) {
+            filtered = filtered.filter(item => {
+                const priceNum = parseInt(item.price.replace(/[^0-9]/g, ''));
+                return !isNaN(priceNum) && priceNum <= parseInt(priceMax);
+            });
+        }
+        
+        if (rooms) {
+            filtered = filtered.filter(item => item.rooms === rooms);
+        }
+        
+        renderResults(filtered);
+        document.getElementById('statusBar').innerHTML = `<div class="text-center py-2 text-blue-600">🔍 ПОКАЗАНО ${filtered.length} ИЗ ${allResults.length} ОБЪЯВЛЕНИЙ</div>`;
+    }
+
+    function copyToCRM(index) {
+        const item = allResults[index];
+        const text = `${item.title}\n💰 ${item.price}\n📍 Шарыпово / Ужур\n📞 ${item.our_phone} (${item.our_name})\n🔗 ${item.url}`;
+        navigator.clipboard.writeText(text);
+        
+        // Показываем уведомление
+        const toast = document.createElement('div');
+        toast.className = 'fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-full text-sm z-50';
+        toast.textContent = '✅ СКОПИРОВАНО! ВСТАВЬТЕ В CRM';
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2000);
+    }
+
+    // ЗАГРУЖАЕМ ПРИ СТАРТЕ
+    loadData();
+</script>
+</body>
+</html>
