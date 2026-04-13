@@ -3,28 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>CRM | Управление объектами</title>
+    <title>CRM | Риэлтор Людмила</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f3f4f6; }
         .btn-gold { background-color: #f5b042; }
         .btn-gold:hover { background-color: #e09e2e; }
-        .status-active { background: #d1fae5; color: #059669; }
-        .status-sold { background: #fee2e2; color: #dc2626; }
-        .status-reserved { background: #fef3c7; color: #92400e; }
-        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1f2937; color: white; padding: 8px 16px; border-radius: 9999px; font-size: 14px; z-index: 1000; opacity: 0; transition: opacity 0.3s; }
+        .btn-green { background-color: #10b981; }
+        .btn-green:hover { background-color: #059669; }
+        .btn-yellow { background-color: #f59e0b; }
+        .btn-yellow:hover { background-color: #d97706; }
+        .status-active { background: #10b981; color: white; }
+        .status-inactive { background: #f59e0b; color: white; }
+        .status-sold { background: #ef4444; color: white; }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1f2937; color: white; padding: 10px 20px; border-radius: 9999px; font-size: 16px; z-index: 1000; opacity: 0; transition: opacity 0.3s; }
         .toast.show { opacity: 1; }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; }
         .modal.active { display: flex; }
         .private-field { background: #fef3c7; border-left: 3px solid #f5b042; }
-        .documents-field { background: #e0f2fe; border-left: 3px solid #0284c7; margin-top: 16px; }
-        .photo-preview { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-        .photo-preview img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
+        .documents-field { background: #e0f2fe; border-left: 3px solid #0284c7; }
+        .tab-button { padding: 10px 20px; font-size: 16px; font-weight: bold; border-radius: 12px 12px 0 0; }
+        .tab-active { background: white; color: #f5b042; border-bottom: 3px solid #f5b042; }
+        .tab-inactive { background: #e5e7eb; color: #6b7280; }
         label { font-weight: 600; font-size: 14px; }
-        input, select, textarea { font-size: 16px; padding: 10px; }
+        input, select, textarea { font-size: 16px; padding: 10px; border-radius: 10px; }
+        .agent-photo { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; }
         @media (max-width: 640px) {
-            .modal-content { width: 95%; margin: 10px; }
+            .tab-button { padding: 6px 12px; font-size: 12px; }
         }
     </style>
 </head>
@@ -37,11 +43,12 @@
         <div class="flex items-center gap-3">
             <img src="логотип недвижка золотой.png" alt="Лого" class="h-10 w-auto">
             <div>
-                <h1 class="text-xl font-bold text-gray-800">CRM РИЭЛТОРА</h1>
-                <p class="text-xs text-gray-500">Управление объектами</p>
+                <h1 class="text-xl font-bold text-gray-800">CRM ЛЮДМИЛА МЕЛЬВЕРТ</h1>
+                <p class="text-xs text-gray-500">Риэлтор с 26-летним стажем</p>
             </div>
         </div>
-        <div class="flex gap-2">
+        <div class="flex items-center gap-2">
+            <img src="фото.jpg" alt="Фото риэлтора" class="agent-photo border-2 border-gold">
             <a href="catalog.html" class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg text-sm font-semibold">📋 КАТАЛОГ</a>
             <a href="index.html" class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg text-sm font-semibold">🏠 ЛЕНДИНГ</a>
         </div>
@@ -49,29 +56,134 @@
 </header>
 
 <main class="max-w-7xl mx-auto px-4 py-6">
-    <div class="flex justify-between items-center mb-6 flex-wrap gap-2">
-        <h2 class="text-2xl font-bold text-gray-800">📦 ОБЪЕКТЫ НЕДВИЖИМОСТИ</h2>
-        <button onclick="openAddModal()" class="btn-gold text-gray-900 px-5 py-2 rounded-lg font-semibold text-base">➕ ДОБАВИТЬ ОБЪЕКТ</button>
+    
+    <!-- ВКЛАДКИ -->
+    <div class="flex flex-wrap gap-1 mb-6">
+        <button onclick="switchTab('objects')" id="tab_objects" class="tab-button tab-active">🏠 ОБЪЕКТЫ</button>
+        <button onclick="switchTab('sellers')" id="tab_sellers" class="tab-button tab-inactive">👤 ПРОДАВЦЫ</button>
+        <button onclick="switchTab('buyers')" id="tab_buyers" class="tab-button tab-inactive">🏃 ПОКУПАТЕЛИ</button>
+        <button onclick="switchTab('ads')" id="tab_ads" class="tab-button tab-inactive">📢 РЕКЛАМА</button>
+        <button onclick="switchTab('parser')" id="tab_parser" class="tab-button tab-inactive">🤖 ПАРСЕР</button>
     </div>
 
-    <div class="bg-white rounded-xl p-4 mb-6 shadow-sm">
-        <div class="flex flex-wrap gap-3">
-            <select id="filterStatus" class="border rounded-lg px-3 py-2 text-base">
-                <option value="all">ВСЕ СТАТУСЫ</option>
-                <option value="активно">АКТИВНО</option>
-                <option value="продано">ПРОДАНО</option>
-                <option value="в резерве">В РЕЗЕРВЕ</option>
-            </select>
-            <input type="text" id="filterSearch" placeholder="ПОИСК ПО АДРЕСУ..." class="border rounded-lg px-3 py-2 text-base flex-1">
-            <button onclick="loadObjects()" class="bg-gray-800 text-white px-5 py-2 rounded-lg text-base">🔍 НАЙТИ</button>
+    <!-- ВКЛАДКА: ОБЪЕКТЫ -->
+    <div id="objectsTab" class="tab-content">
+        <div class="bg-white rounded-xl p-4 mb-6 shadow-sm">
+            <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
+                <h2 class="text-2xl font-bold text-gray-800">📦 ОБЪЕКТЫ НЕДВИЖИМОСТИ</h2>
+                <button onclick="openAddModal()" class="btn-gold text-gray-900 px-5 py-2 rounded-lg font-semibold text-base">➕ ДОБАВИТЬ ОБЪЕКТ</button>
+            </div>
+            
+            <div class="flex flex-wrap gap-3 mb-4">
+                <select id="filterStatus" class="border rounded-lg px-3 py-2 text-base">
+                    <option value="all">ВСЕ СТАТУСЫ</option>
+                    <option value="активно">АКТИВНО (в каталоге)</option>
+                    <option value="неактивно">НЕАКТИВНО (скрыто)</option>
+                    <option value="продано">ПРОДАНО</option>
+                </select>
+                <input type="text" id="filterSearch" placeholder="ПОИСК ПО АДРЕСУ..." class="border rounded-lg px-3 py-2 text-base flex-1">
+                <button onclick="loadObjects()" class="bg-gray-800 text-white px-5 py-2 rounded-lg text-base">🔍 НАЙТИ</button>
+            </div>
+            
+            <div id="objectsList" class="space-y-3">
+                <div class="text-center py-10 text-gray-500">ЗАГРУЗКА...</div>
+            </div>
         </div>
     </div>
 
-    <div id="objectsList" class="space-y-3">
-        <div class="text-center py-10 text-gray-500">ЗАГРУЗКА...</div>
+    <!-- ВКЛАДКА: ПРОДАВЦЫ -->
+    <div id="sellersTab" class="tab-content" style="display:none;">
+        <div class="bg-white rounded-xl p-4 shadow-sm">
+            <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
+                <h2 class="text-2xl font-bold text-gray-800">👤 ПРОДАВЦЫ</h2>
+                <button onclick="openSellerModal()" class="btn-gold text-gray-900 px-5 py-2 rounded-lg font-semibold text-base">➕ ДОБАВИТЬ ПРОДАВЦА</button>
+            </div>
+            <div id="sellersList" class="space-y-3">
+                <div class="text-center py-10 text-gray-500">ЗАГРУЗКА...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ВКЛАДКА: ПОКУПАТЕЛИ -->
+    <div id="buyersTab" class="tab-content" style="display:none;">
+        <div class="bg-white rounded-xl p-4 shadow-sm">
+            <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
+                <h2 class="text-2xl font-bold text-gray-800">🏃 ПОКУПАТЕЛИ</h2>
+                <button onclick="openBuyerModal()" class="btn-gold text-gray-900 px-5 py-2 rounded-lg font-semibold text-base">➕ ДОБАВИТЬ ПОКУПАТЕЛЯ</button>
+            </div>
+            <div id="buyersList" class="space-y-3">
+                <div class="text-center py-10 text-gray-500">ЗАГРУЗКА...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ВКЛАДКА: РЕКЛАМА -->
+    <div id="adsTab" class="tab-content" style="display:none;">
+        <div class="bg-white rounded-xl p-4 shadow-sm">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">📢 НАСТРОЙКИ РЕКЛАМЫ</h2>
+            <div class="space-y-4">
+                <div class="border rounded-lg p-4">
+                    <h3 class="font-bold text-lg"><i class="fab fa-avito text-blue-500"></i> Авито</h3>
+                    <p class="text-sm text-gray-500 mb-2">Автовыгрузка через фид (XML)</p>
+                    <input type="text" id="avitoFeed" placeholder="Ссылка на фид XML" class="w-full border rounded-lg px-3 py-2 mb-2">
+                    <button onclick="saveAdSettings('avito')" class="btn-green text-white px-4 py-2 rounded-lg">💾 СОХРАНИТЬ</button>
+                </div>
+                <div class="border rounded-lg p-4">
+                    <h3 class="font-bold text-lg"><i class="fas fa-building"></i> Циан</h3>
+                    <input type="text" id="cianFeed" placeholder="Ссылка на фид XML" class="w-full border rounded-lg px-3 py-2 mb-2">
+                    <button onclick="saveAdSettings('cian')" class="btn-green text-white px-4 py-2 rounded-lg">💾 СОХРАНИТЬ</button>
+                </div>
+                <div class="border rounded-lg p-4">
+                    <h3 class="font-bold text-lg"><i class="fas fa-home"></i> Домклик (Сбер)</h3>
+                    <input type="text" id="domclickFeed" placeholder="Ссылка на фид XML" class="w-full border rounded-lg px-3 py-2 mb-2">
+                    <button onclick="saveAdSettings('domclick')" class="btn-green text-white px-4 py-2 rounded-lg">💾 СОХРАНИТЬ</button>
+                </div>
+                <div class="border rounded-lg p-4">
+                    <h3 class="font-bold text-lg"><i class="fab fa-vk"></i> Юла</h3>
+                    <input type="text" id="yulaFeed" placeholder="Ссылка на фид XML" class="w-full border rounded-lg px-3 py-2 mb-2">
+                    <button onclick="saveAdSettings('yula')" class="btn-green text-white px-4 py-2 rounded-lg">💾 СОХРАНИТЬ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ВКЛАДКА: ПАРСЕР -->
+    <div id="parserTab" class="tab-content" style="display:none;">
+        <div class="bg-white rounded-xl p-4 shadow-sm">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">🤖 ПАРСЕР НЕДВИЖИМОСТИ</h2>
+            <div class="bg-blue-50 p-4 rounded-lg mb-4">
+                <p class="text-sm text-gray-700">🔧 ПАРСЕР РАБОТАЕТ ЧЕРЕЗ NODE.JS</p>
+                <p class="text-xs text-gray-500 mt-1">Для запуска парсера откройте терминал и выполните команды ниже</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-4 mb-6">
+                <div class="border rounded-lg p-4">
+                    <h3 class="font-bold text-lg"><i class="fab fa-avito"></i> Авито</h3>
+                    <input type="text" id="parseSearch" placeholder="Что ищем? (например: 2-комнатная квартира)" class="w-full border rounded-lg px-3 py-2 mb-2">
+                    <button onclick="startParse('avito')" class="btn-gold text-gray-900 px-4 py-2 rounded-lg w-full">🚀 НАЧАТЬ ПАРСИНГ</button>
+                </div>
+                <div class="border rounded-lg p-4">
+                    <h3 class="font-bold text-lg"><i class="fas fa-building"></i> Циан</h3>
+                    <button onclick="startParse('cian')" class="btn-gold text-gray-900 px-4 py-2 rounded-lg w-full">🚀 НАЧАТЬ ПАРСИНГ</button>
+                </div>
+                <div class="border rounded-lg p-4">
+                    <h3 class="font-bold text-lg"><i class="fas fa-home"></i> Домклик</h3>
+                    <button onclick="startParse('domclick')" class="btn-gold text-gray-900 px-4 py-2 rounded-lg w-full">🚀 НАЧАТЬ ПАРСИНГ</button>
+                </div>
+                <div class="border rounded-lg p-4">
+                    <h3 class="font-bold text-lg"><i class="fab fa-vk"></i> Юла</h3>
+                    <button onclick="startParse('yula')" class="btn-gold text-gray-900 px-4 py-2 rounded-lg w-full">🚀 НАЧАТЬ ПАРСИНГ</button>
+                </div>
+            </div>
+            
+            <div id="parseResults" class="space-y-2 max-h-96 overflow-y-auto">
+                <div class="text-center py-10 text-gray-500">СПАРСЕННЫЕ ОБЪЯВЛЕНИЯ ПОЯВЯТСЯ ЗДЕСЬ</div>
+            </div>
+        </div>
     </div>
 </main>
 
+<!-- МОДАЛЬНОЕ ОКНО ДЛЯ ОБЪЕКТОВ -->
 <div id="objectModal" class="modal">
     <div class="bg-white rounded-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto m-4">
         <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
@@ -81,92 +193,53 @@
         <div class="p-6 space-y-4">
             <input type="hidden" id="objectId">
             
-            <!-- ОСНОВНАЯ ИНФОРМАЦИЯ -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="md:col-span-2">
-                    <label>🏠 АДРЕС *</label>
-                    <input type="text" id="address" class="w-full border rounded-lg px-3 py-2" placeholder="ул. Ленина, д. 10">
-                </div>
-                <div>
-                    <label>🔒 НОМЕР КВАРТИРЫ (СКРЫТО)</label>
-                    <input type="text" id="apartment" class="w-full border rounded-lg px-3 py-2 bg-yellow-50" placeholder="45">
-                </div>
-                <div>
-                    <label>💰 ЦЕНА (₽) *</label>
-                    <input type="number" id="price" class="w-full border rounded-lg px-3 py-2" placeholder="3 500 000">
-                </div>
+                <div class="md:col-span-2"><label>🏠 АДРЕС *</label><input type="text" id="address" class="w-full border rounded-lg px-3 py-2"></div>
+                <div><label>🔒 НОМЕР КВАРТИРЫ</label><input type="text" id="apartment" class="w-full border rounded-lg px-3 py-2 bg-yellow-50"></div>
+                <div><label>💰 ЦЕНА (₽) *</label><input type="number" id="price" class="w-full border rounded-lg px-3 py-2"></div>
             </div>
 
-            <!-- ХАРАКТЕРИСТИКИ -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div><label>КОМНАТ</label><input type="number" id="rooms" class="w-full border rounded-lg px-3 py-2" placeholder="2"></div>
-                <div><label>ЭТАЖ</label><input type="text" id="floor" class="w-full border rounded-lg px-3 py-2" placeholder="5"></div>
-                <div><label>ВСЕГО ЭТАЖЕЙ</label><input type="text" id="totalFloors" class="w-full border rounded-lg px-3 py-2" placeholder="9"></div>
-                <div><label>ПЛОЩАДЬ (м²)</label><input type="text" id="area" class="w-full border rounded-lg px-3 py-2" placeholder="48"></div>
+                <div><label>КОМНАТ</label><input type="number" id="rooms" class="w-full border rounded-lg px-3 py-2"></div>
+                <div><label>ЭТАЖ</label><input type="text" id="floor" class="w-full border rounded-lg px-3 py-2"></div>
+                <div><label>ВСЕГО ЭТАЖЕЙ</label><input type="text" id="totalFloors" class="w-full border rounded-lg px-3 py-2"></div>
+                <div><label>ПЛОЩАДЬ (м²)</label><input type="text" id="area" class="w-full border rounded-lg px-3 py-2"></div>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
-                <div><label>БАЛКОН/ЛОДЖИЯ</label><select id="balcony" class="w-full border rounded-lg px-3 py-2"><option value="">НЕТ</option><option value="балкон">БАЛКОН</option><option value="лоджия">ЛОДЖИЯ</option><option value="2 балкона">2 БАЛКОНА</option></select></div>
-                <div><label>ТИП ДОМА</label><select id="houseType" class="w-full border rounded-lg px-3 py-2"><option value="панельный">ПАНЕЛЬНЫЙ</option><option value="кирпичный">КИРПИЧНЫЙ</option><option value="монолитный">МОНОЛИТНЫЙ</option><option value="хрущёвка">ХРУЩЁВКА</option></select></div>
+                <div><label>БАЛКОН/ЛОДЖИЯ</label><select id="balcony" class="w-full border rounded-lg px-3 py-2"><option value="">НЕТ</option><option value="балкон">БАЛКОН</option><option value="лоджия">ЛОДЖИЯ</option></select></div>
+                <div><label>ТИП ДОМА</label><select id="houseType" class="w-full border rounded-lg px-3 py-2"><option value="панельный">ПАНЕЛЬНЫЙ</option><option value="кирпичный">КИРПИЧНЫЙ</option><option value="монолитный">МОНОЛИТНЫЙ</option></select></div>
             </div>
 
-            <!-- ЯНДЕКС ПАПКА -->
-            <div>
-                <label>📁 ССЫЛКА НА ПАПКУ ЯНДЕКС ДИСК (ФОТО)</label>
-                <input type="text" id="yandexFolderUrl" class="w-full border rounded-lg px-3 py-2" placeholder="https://disk.yandex.ru/d/xxxx">
-                <p class="text-xs text-gray-400 mt-1">ВСТАВЬТЕ ССЫЛКУ НА ПАПКУ — ФОТО ПОДГРУЗЯТСЯ АВТОМАТИЧЕСКИ</p>
-            </div>
+            <div><label>📁 ССЫЛКА НА ПАПКУ ЯНДЕКС ДИСК</label><input type="text" id="yandexFolderUrl" class="w-full border rounded-lg px-3 py-2"></div>
+            <div><label>📝 ОПИСАНИЕ</label><textarea id="description" rows="3" class="w-full border rounded-lg px-3 py-2"></textarea></div>
 
-            <!-- ОПИСАНИЕ -->
-            <div>
-                <label>📝 ОПИСАНИЕ ДЛЯ ПОКУПАТЕЛЕЙ</label>
-                <textarea id="description" rows="3" class="w-full border rounded-lg px-3 py-2" placeholder="Просторная квартира, свежий ремонт..."></textarea>
-            </div>
-
-            <!-- КОНФИДЕНЦИАЛЬНАЯ ИНФОРМАЦИЯ -->
             <div class="private-field p-4 rounded-lg">
-                <h4 class="font-bold text-gray-800 mb-3 text-lg">🔒 КОНФИДЕНЦИАЛЬНО (ВИДНО ТОЛЬКО ВАМ)</h4>
-                
+                <h4 class="font-bold mb-3">🔒 КОНФИДЕНЦИАЛЬНО</h4>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div><label>ФИО СОБСТВЕННИКА</label><input type="text" id="ownerName" class="w-full border rounded-lg px-3 py-2" placeholder="Иванов Иван Иванович"></div>
-                    <div><label>ТЕЛЕФОН СОБСТВЕННИКА</label><input type="text" id="ownerPhone" class="w-full border rounded-lg px-3 py-2" placeholder="+7 XXX XXX-XX-XX"></div>
+                    <div><label>ФИО СОБСТВЕННИКА</label><input type="text" id="ownerName" class="w-full border rounded-lg px-3 py-2"></div>
+                    <div><label>ТЕЛЕФОН</label><input type="text" id="ownerPhone" class="w-full border rounded-lg px-3 py-2"></div>
                 </div>
-                
                 <div class="grid grid-cols-2 gap-4 mt-3">
-                    <div><label>ВОЗНАГРАЖДЕНИЕ (%)</label><input type="text" id="commissionPercent" class="w-full border rounded-lg px-3 py-2" placeholder="3"></div>
-                    <div><label>ВОЗНАГРАЖДЕНИЕ (ФИКС, ₽)</label><input type="text" id="commissionFixed" class="w-full border rounded-lg px-3 py-2" placeholder="50 000"></div>
+                    <div><label>КОМИССИЯ (%)</label><input type="text" id="commissionPercent" class="w-full border rounded-lg px-3 py-2"></div>
+                    <div><label>КОМИССИЯ (ФИКС)</label><input type="text" id="commissionFixed" class="w-full border rounded-lg px-3 py-2"></div>
                 </div>
-                
-                <div><label>ЗАМЕТКИ ДЛЯ СЕБЯ</label><textarea id="privateNote" rows="2" class="w-full border rounded-lg px-3 py-2" placeholder="Особые условия, ключи, документы..."></textarea></div>
             </div>
 
-            <!-- ДОКУМЕНТЫ (НОВЫЙ БЛОК) -->
             <div class="documents-field p-4 rounded-lg">
-                <h4 class="font-bold text-gray-800 mb-3 text-lg">📄 ДОКУМЕНТЫ ПО ОБЪЕКТУ (СКРЫТО ОТ КЛИЕНТОВ)</h4>
-                <p class="text-xs text-gray-500 mb-2">ВСТАВЬТЕ ССЫЛКИ НА ФАЙЛЫ ИЗ ЯНДЕКС ДИСКА</p>
-                
-                <div class="grid grid-cols-1 gap-3">
-                    <div><label>📄 ЕГРН (ссылку на файл)</label><input type="text" id="egrn" class="w-full border rounded-lg px-3 py-2" placeholder="https://disk.yandex.ru/..."></div>
-                    <div><label>📄 ДОГОВОР КУПЛИ-ПРОДАЖИ</label><input type="text" id="dogovor" class="w-full border rounded-lg px-3 py-2" placeholder="https://disk.yandex.ru/..."></div>
-                    <div><label>📄 ПАСПОРТ СОБСТВЕННИКА</label><input type="text" id="passport" class="w-full border rounded-lg px-3 py-2" placeholder="https://disk.yandex.ru/..."></div>
-                    <div><label>📄 ДОВЕРЕННОСТЬ</label><input type="text" id="doverennost" class="w-full border rounded-lg px-3 py-2" placeholder="https://disk.yandex.ru/..."></div>
-                    <div><label>📄 ДРУГИЕ ДОКУМЕНТЫ</label><input type="text" id="otherDocs" class="w-full border rounded-lg px-3 py-2" placeholder="https://disk.yandex.ru/..."></div>
+                <h4 class="font-bold mb-3">📄 ДОКУМЕНТЫ</h4>
+                <div class="grid grid-cols-1 gap-2">
+                    <div><label>ЕГРН</label><input type="text" id="egrn" class="w-full border rounded-lg px-3 py-2"></div>
+                    <div><label>ДОГОВОР</label><input type="text" id="dogovor" class="w-full border rounded-lg px-3 py-2"></div>
+                    <div><label>ПАСПОРТ</label><input type="text" id="passport" class="w-full border rounded-lg px-3 py-2"></div>
                 </div>
             </div>
 
-            <!-- СТАТУС -->
-            <div>
-                <label>СТАТУС</label>
-                <select id="status" class="w-full border rounded-lg px-3 py-2">
-                    <option value="активно">АКТИВНО</option>
-                    <option value="в резерве">В РЕЗЕРВЕ</option>
-                    <option value="продано">ПРОДАНО</option>
-                </select>
-            </div>
+            <div><label>СТАТУС</label><select id="status" class="w-full border rounded-lg px-3 py-2"><option value="активно">АКТИВНО (в каталоге)</option><option value="неактивно">НЕАКТИВНО (скрыто)</option><option value="продано">ПРОДАНО</option></select></div>
         </div>
         <div class="border-t px-6 py-4 flex justify-end gap-3">
-            <button onclick="closeModal()" class="px-5 py-2 border rounded-lg text-base">ОТМЕНА</button>
-            <button onclick="saveObject()" class="btn-gold text-gray-900 px-5 py-2 rounded-lg font-semibold text-base">СОХРАНИТЬ</button>
+            <button onclick="closeModal()" class="px-5 py-2 border rounded-lg">ОТМЕНА</button>
+            <button onclick="saveObject()" class="btn-gold text-gray-900 px-5 py-2 rounded-lg font-semibold">СОХРАНИТЬ</button>
         </div>
     </div>
 </div>
@@ -174,7 +247,7 @@
 <script>
     const API_URL = 'https://script.google.com/macros/s/AKfycbzLE7IFiWI-aH9cTgPkT1AGmAwUym4ggyZIvD7UdD3CJXxf6UT7mlOLwV7PNQx28IuX/exec';
     
-    let objects = [];
+    let objects = [], sellers = [], buyers = [];
     let editId = null;
 
     function showToast(msg) {
@@ -184,106 +257,178 @@
         setTimeout(() => toast.classList.remove('show'), 3000);
     }
 
+    // ========== ВКЛАДКИ ==========
+    function switchTab(tab) {
+        document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+        document.getElementById(tab + 'Tab').style.display = 'block';
+        document.querySelectorAll('.tab-button').forEach(btn => {
+            btn.classList.remove('tab-active');
+            btn.classList.add('tab-inactive');
+        });
+        document.getElementById('tab_' + tab).classList.add('tab-active');
+        document.getElementById('tab_' + tab).classList.remove('tab-inactive');
+        
+        if (tab === 'objects') loadObjects();
+        if (tab === 'sellers') loadSellers();
+        if (tab === 'buyers') loadBuyers();
+        if (tab === 'ads') loadAdSettings();
+    }
+
+    // ========== ОБЪЕКТЫ ==========
     async function loadObjects() {
         const filterStatus = document.getElementById('filterStatus').value;
         const filterSearch = document.getElementById('filterSearch').value.toLowerCase();
-        
         try {
             const response = await fetch(`${API_URL}?action=getObjects`);
             const data = await response.json();
-            
             if (data.status === 'success') {
                 objects = data.objects || [];
                 let filtered = objects;
                 if (filterStatus !== 'all') filtered = filtered.filter(obj => obj.Статус === filterStatus);
                 if (filterSearch) filtered = filtered.filter(obj => obj.Адрес?.toLowerCase().includes(filterSearch));
                 renderObjects(filtered);
-            } else {
-                showToast('ОШИБКА ЗАГРУЗКИ');
             }
-        } catch(e) {
-            showToast('ОШИБКА СОЕДИНЕНИЯ');
-        }
+        } catch(e) { showToast('ОШИБКА ЗАГРУЗКИ'); }
     }
 
     function renderObjects(objectsList) {
         const container = document.getElementById('objectsList');
-        if (objectsList.length === 0) {
-            container.innerHTML = '<div class="text-center py-10 text-gray-500">📭 НЕТ ОБЪЕКТОВ</div>';
-            return;
-        }
+        if (objectsList.length === 0) { container.innerHTML = '<div class="text-center py-10 text-gray-500">📭 НЕТ ОБЪЕКТОВ</div>'; return; }
         
         container.innerHTML = objectsList.map(obj => `
-            <div class="bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition">
+            <div class="bg-white rounded-xl shadow-sm p-4">
                 <div class="flex flex-col md:flex-row gap-4">
-                    <div class="w-full md:w-32 h-32 bg-gray-200 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-home text-gray-400 text-4xl"></i>
-                    </div>
+                    <div class="w-full md:w-32 h-32 bg-gray-200 rounded-lg flex items-center justify-center"><i class="fas fa-home text-gray-400 text-4xl"></i></div>
                     <div class="flex-1">
                         <div class="flex justify-between items-start flex-wrap gap-2">
                             <h3 class="text-xl font-bold text-gray-800">${obj.Адрес || 'БЕЗ АДРЕСА'}</h3>
-                            <span class="px-3 py-1 rounded-full text-sm font-semibold status-${obj.Статус === 'активно' ? 'active' : (obj.Статус === 'продано' ? 'sold' : 'reserved')}">${obj.Статус || 'АКТИВНО'}</span>
+                            <button onclick="toggleVisibility(${obj.ID}, '${obj.Статус}')" class="px-3 py-1 rounded-lg text-sm font-semibold ${obj.Статус === 'активно' ? 'btn-green text-white' : (obj.Статус === 'неактивно' ? 'btn-yellow text-white' : 'bg-red-500 text-white')}">
+                                ${obj.Статус === 'активно' ? '✅ АКТИВНО' : (obj.Статус === 'неактивно' ? '⏸ НЕАКТИВНО' : '❌ ПРОДАНО')}
+                            </button>
                         </div>
                         <p class="text-2xl font-bold text-gold mt-1">${Number(obj.Цена).toLocaleString()} ₽</p>
-                        <div class="flex flex-wrap gap-3 mt-2 text-sm text-gray-600">
+                        <div class="flex gap-3 mt-2 text-sm text-gray-600">
                             <span><i class="fas fa-door-open"></i> ${obj.Комнат || '?'} КОМН.</span>
                             <span><i class="fas fa-layer-group"></i> ${obj.Этаж || '?'}/${obj.Всего_этажей || '?'} ЭТ.</span>
                             <span><i class="fas fa-ruler-combined"></i> ${obj.Площадь || '?'} м²</span>
-                            ${obj.Балкон ? `<span><i class="fas fa-umbrella"></i> ${obj.Балкон}</span>` : ''}
                         </div>
                         <div class="flex gap-2 mt-3 flex-wrap">
                             <button onclick="editObject(${obj.ID})" class="bg-blue-600 text-white px-3 py-1 rounded-lg text-sm">✏️ РЕДАКТ.</button>
                             <button onclick="sendPresentation(${obj.ID})" class="bg-green-600 text-white px-3 py-1 rounded-lg text-sm">📤 ПРЕЗЕНТАЦИЯ</button>
                             <button onclick="exportToAd(${obj.ID})" class="bg-purple-600 text-white px-3 py-1 rounded-lg text-sm">📢 В РЕКЛАМУ</button>
-                            <button onclick="changeStatus(${obj.ID}, 'продано')" class="bg-red-600 text-white px-3 py-1 rounded-lg text-sm">✅ ПРОДАНО</button>
                         </div>
-                        ${obj.Номер_квартиры ? `<div class="mt-2 text-sm text-gray-400">🔒 КВ. ${obj.Номер_квартиры}</div>` : ''}
-                        ${obj.Яндекс_папка ? `<div class="mt-1 text-sm text-blue-500">📁 <a href="${obj.Яндекс_папка}" target="_blank">ПАПКА С ФОТО</a></div>` : ''}
                     </div>
                 </div>
             </div>
         `).join('');
     }
 
+    async function toggleVisibility(id, currentStatus) {
+        let newStatus = 'неактивно';
+        if (currentStatus === 'неактивно') newStatus = 'активно';
+        if (currentStatus === 'продано') { showToast('❌ ПРОДАННЫЙ ОБЪЕКТ НЕЛЬЗЯ АКТИВИРОВАТЬ'); return; }
+        try {
+            await fetch(`${API_URL}?action=updateStatus&id=${id}&status=${newStatus}`);
+            showToast(`✅ СТАТУС ИЗМЕНЁН НА ${newStatus === 'активно' ? 'АКТИВНО' : 'НЕАКТИВНО'}`);
+            loadObjects();
+        } catch(e) { showToast('❌ ОШИБКА'); }
+    }
+
     function sendPresentation(id) {
         const obj = objects.find(o => o.ID == id);
         if (!obj) return;
-        
-        const presentationText = `🏠 ОБЪЕКТ НЕДВИЖИМОСТИ
-📍 АДРЕС: ${obj.Адрес}
-💰 ЦЕНА: ${Number(obj.Цена).toLocaleString()} ₽
-📐 ХАРАКТЕРИСТИКИ:
-   • КОМНАТ: ${obj.Комнат || '?'}
-   • ЭТАЖ: ${obj.Этаж || '?'}/${obj.Всего_этажей || '?'}
-   • ПЛОЩАДЬ: ${obj.Площадь || '?'} м²
-   • БАЛКОН: ${obj.Балкон || 'НЕТ'}
-📝 ОПИСАНИЕ: ${obj.Описание || 'УТОЧНЯЙТЕ'}
-📁 ФОТО: ${obj.Яндекс_папка || 'НЕТ'}`;
-        
-        navigator.clipboard.writeText(presentationText);
-        showToast('✅ ПРЕЗЕНТАЦИЯ СКОПИРОВАНА! ОТПРАВЬТЕ КЛИЕНТУ');
+        const text = `🏠 ОБЪЕКТ: ${obj.Адрес}\n💰 ЦЕНА: ${Number(obj.Цена).toLocaleString()} ₽\n📐 ${obj.Комнат} КОМН., ${obj.Площадь} м², ${obj.Этаж}/${obj.Всего_этажей} ЭТ.\n👩‍💼 РИЭЛТОР: Людмила Мельверт\n📞 +7 (960) 763-51-70`;
+        navigator.clipboard.writeText(text);
+        showToast('✅ ПРЕЗЕНТАЦИЯ СКОПИРОВАНА');
     }
 
     function exportToAd(id) {
         const obj = objects.find(o => o.ID == id);
         if (!obj) return;
-        
-        const adText = `${obj.Адрес}
-${Number(obj.Цена).toLocaleString()} ₽
-
-${obj.Комнат}-КОМНАТНАЯ КВАРТИРА, ${obj.Площадь} м², ${obj.Этаж}/${obj.Всего_этажей} ЭТАЖ
-
-${obj.Балкон ? `БАЛКОН/ЛОДЖИЯ: ${obj.Балкон}` : ''}
-
-${obj.Описание || ''}
-
-📞 ЗВОНИТЕ: +7 (960) 763-51-70
-ЛЮДМИЛА МЕЛЬВЕРТ, РИЭЛТОР`;
-        
-        navigator.clipboard.writeText(adText);
-        showToast('✅ ТЕКСТ ДЛЯ РЕКЛАМЫ СКОПИРОВАН!');
+        const text = `${obj.Адрес}\n${Number(obj.Цена).toLocaleString()} ₽\n${obj.Комнат}-комн., ${obj.Площадь} м², ${obj.Этаж}/${obj.Всего_этажей} эт.\n📞 +7 (960) 763-51-70`;
+        navigator.clipboard.writeText(text);
+        showToast('✅ ТЕКСТ ДЛЯ РЕКЛАМЫ СКОПИРОВАН');
     }
 
+    // ========== ПРОДАВЦЫ (локальное хранилище) ==========
+    function loadSellers() {
+        const saved = localStorage.getItem('realtor_sellers');
+        sellers = saved ? JSON.parse(saved) : [];
+        renderSellers();
+    }
+    function saveSellers() { localStorage.setItem('realtor_sellers', JSON.stringify(sellers)); renderSellers(); }
+    function renderSellers() {
+        const container = document.getElementById('sellersList');
+        if (sellers.length === 0) { container.innerHTML = '<div class="text-center py-10 text-gray-500">👤 НЕТ ПРОДАВЦОВ</div>'; return; }
+        container.innerHTML = sellers.map((s, i) => `<div class="bg-gray-50 p-4 rounded-lg"><div class="flex justify-between"><h3 class="font-bold">${s.name}</h3><button onclick="deleteSeller(${i})" class="text-red-500">🗑️</button></div><p>📞 ${s.phone || '—'}</p><p>🏠 ${s.object || '—'}</p><p>📍 ${s.address || '—'}</p><p>🆔 Кадастр: ${s.cadastre || '—'}</p><p>💰 Цена: ${s.price || '—'} ₽ | Комиссия: ${s.commission || '—'} ₽</p></div>`).join('');
+    }
+    function openSellerModal() {
+        const name = prompt('ФИО продавца:');
+        if (!name) return;
+        const phone = prompt('Телефон:');
+        const object = prompt('Какой объект продаёт?');
+        const address = prompt('Адрес объекта:');
+        const cadastre = prompt('Кадастровый номер:');
+        const price = prompt('Цена продажи (₽):');
+        const commission = prompt('Комиссия (₽):');
+        sellers.push({ name, phone, object, address, cadastre, price, commission });
+        saveSellers();
+        showToast('✅ ПРОДАВЕЦ ДОБАВЛЕН');
+    }
+    function deleteSeller(i) { sellers.splice(i,1); saveSellers(); showToast('✅ УДАЛЁН'); }
+
+    // ========== ПОКУПАТЕЛИ (локальное хранилище) ==========
+    function loadBuyers() {
+        const saved = localStorage.getItem('realtor_buyers');
+        buyers = saved ? JSON.parse(saved) : [];
+        renderBuyers();
+    }
+    function saveBuyers() { localStorage.setItem('realtor_buyers', JSON.stringify(buyers)); renderBuyers(); }
+    function renderBuyers() {
+        const container = document.getElementById('buyersList');
+        if (buyers.length === 0) { container.innerHTML = '<div class="text-center py-10 text-gray-500">🏃 НЕТ ПОКУПАТЕЛЕЙ</div>'; return; }
+        container.innerHTML = buyers.map((b, i) => `<div class="bg-gray-50 p-4 rounded-lg"><div class="flex justify-between"><h3 class="font-bold">${b.name}</h3><button onclick="deleteBuyer(${i})" class="text-red-500">🗑️</button></div><p>📞 ${b.phone}</p><p>🏠 Заявка: ${b.requestType || '—'}, ${b.rooms || '—'} комн., ${b.district || '—'}, до ${b.maxPrice || '—'} ₽</p><p>💳 Расчёт: ${b.payment || '—'}</p></div>`).join('');
+    }
+    function openBuyerModal() {
+        const name = prompt('ФИО покупателя:');
+        if (!name) return;
+        const phone = prompt('Телефон:');
+        const requestType = prompt('Что ищет? (дом/квартира):');
+        const rooms = prompt('Количество комнат:');
+        const district = prompt('Район:');
+        const maxPrice = prompt('Максимальная стоимость (₽):');
+        const payment = prompt('Способ расчёта (ипотека/сертификат/нал):');
+        buyers.push({ name, phone, requestType, rooms, district, maxPrice, payment });
+        saveBuyers();
+        showToast('✅ ПОКУПАТЕЛЬ ДОБАВЛЕН');
+    }
+    function deleteBuyer(i) { buyers.splice(i,1); saveBuyers(); showToast('✅ УДАЛЁН'); }
+
+    // ========== РЕКЛАМА ==========
+    function loadAdSettings() {
+        document.getElementById('avitoFeed').value = localStorage.getItem('avito_feed') || '';
+        document.getElementById('cianFeed').value = localStorage.getItem('cian_feed') || '';
+        document.getElementById('domclickFeed').value = localStorage.getItem('domclick_feed') || '';
+        document.getElementById('yulaFeed').value = localStorage.getItem('yula_feed') || '';
+    }
+    function saveAdSettings(platform) {
+        let value = '';
+        if (platform === 'avito') value = document.getElementById('avitoFeed').value;
+        if (platform === 'cian') value = document.getElementById('cianFeed').value;
+        if (platform === 'domclick') value = document.getElementById('domclickFeed').value;
+        if (platform === 'yula') value = document.getElementById('yulaFeed').value;
+        localStorage.setItem(`${platform}_feed`, value);
+        showToast(`✅ НАСТРОЙКИ ${platform.toUpperCase()} СОХРАНЕНЫ`);
+    }
+
+    // ========== ПАРСЕР ==========
+    function startParse(site) {
+        showToast(`🔍 ПАРСИНГ ${site.toUpperCase()} ЗАПУЩЕН... РЕЗУЛЬТАТЫ ПОЯВЯТСЯ В ТЕРМИНАЛЕ NODE.JS`);
+        const search = document.getElementById('parseSearch')?.value || '';
+        fetch(`http://localhost:3000/parse/${site}?search=${encodeURIComponent(search)}`).catch(e => showToast('⚠️ ЗАПУСТИТЕ ПАРСЕР: npm start'));
+    }
+
+    // ========== ОБЩИЕ ФУНКЦИИ ==========
     function openAddModal() {
         editId = null;
         document.getElementById('modalTitle').innerText = '➕ НОВЫЙ ОБЪЕКТ';
@@ -303,12 +448,9 @@ ${obj.Описание || ''}
         document.getElementById('ownerPhone').value = '';
         document.getElementById('commissionPercent').value = '';
         document.getElementById('commissionFixed').value = '';
-        document.getElementById('privateNote').value = '';
         document.getElementById('egrn').value = '';
         document.getElementById('dogovor').value = '';
         document.getElementById('passport').value = '';
-        document.getElementById('doverennost').value = '';
-        document.getElementById('otherDocs').value = '';
         document.getElementById('status').value = 'активно';
         document.getElementById('objectModal').classList.add('active');
     }
@@ -316,9 +458,8 @@ ${obj.Описание || ''}
     function editObject(id) {
         const obj = objects.find(o => o.ID == id);
         if (!obj) return;
-        
         editId = id;
-        document.getElementById('modalTitle').innerText = '✏️ РЕДАКТИРОВАТЬ ОБЪЕКТ';
+        document.getElementById('modalTitle').innerText = '✏️ РЕДАКТИРОВАТЬ';
         document.getElementById('objectId').value = id;
         document.getElementById('address').value = obj.Адрес || '';
         document.getElementById('apartment').value = obj.Номер_квартиры || '';
@@ -335,12 +476,9 @@ ${obj.Описание || ''}
         document.getElementById('ownerPhone').value = obj.Собственник_телефон || '';
         document.getElementById('commissionPercent').value = obj.Комиссия_процент || '';
         document.getElementById('commissionFixed').value = obj.Комиссия_фикс || '';
-        document.getElementById('privateNote').value = obj.Заметки || '';
         document.getElementById('egrn').value = obj.ЕГРН_ссылка || '';
         document.getElementById('dogovor').value = obj.Договор_ссылка || '';
         document.getElementById('passport').value = obj.Паспорт_ссылка || '';
-        document.getElementById('doverennost').value = obj.Доверенность_ссылка || '';
-        document.getElementById('otherDocs').value = obj.Другие_документы || '';
         document.getElementById('status').value = obj.Статус || 'активно';
         document.getElementById('objectModal').classList.add('active');
     }
@@ -348,11 +486,7 @@ ${obj.Описание || ''}
     async function saveObject() {
         const address = document.getElementById('address').value;
         const price = document.getElementById('price').value;
-        
-        if (!address || !price) {
-            showToast('ЗАПОЛНИТЕ АДРЕС И ЦЕНУ');
-            return;
-        }
+        if (!address || !price) { showToast('ЗАПОЛНИТЕ АДРЕС И ЦЕНУ'); return; }
         
         const params = new URLSearchParams();
         params.append('action', 'addObject');
@@ -371,56 +505,43 @@ ${obj.Описание || ''}
         params.append('ownerPhone', document.getElementById('ownerPhone').value);
         params.append('commissionPercent', document.getElementById('commissionPercent').value);
         params.append('commissionFixed', document.getElementById('commissionFixed').value);
-        params.append('privateNote', document.getElementById('privateNote').value);
         params.append('egrn', document.getElementById('egrn').value);
         params.append('dogovor', document.getElementById('dogovor').value);
         params.append('passport', document.getElementById('passport').value);
-        params.append('doverennost', document.getElementById('doverennost').value);
-        params.append('otherDocs', document.getElementById('otherDocs').value);
         params.append('status', document.getElementById('status').value);
         
         try {
             const response = await fetch(`${API_URL}?${params.toString()}`);
             const data = await response.json();
-            
-            if (data.status === 'success') {
-                showToast('✅ ОБЪЕКТ СОХРАНЁН');
-                closeModal();
-                loadObjects();
-            } else {
-                showToast('❌ ОШИБКА СОХРАНЕНИЯ');
-            }
-        } catch(e) {
-            showToast('❌ ОШИБКА СОЕДИНЕНИЯ');
-        }
+            if (data.status === 'success') { showToast('✅ СОХРАНЕНО'); closeModal(); loadObjects(); }
+            else showToast('❌ ОШИБКА');
+        } catch(e) { showToast('❌ ОШИБКА СОЕДИНЕНИЯ'); }
     }
 
-    async function changeStatus(id, status) {
-        try {
-            await fetch(`${API_URL}?action=updateStatus&id=${id}&status=${status}`);
-            showToast(`✅ СТАТУС ИЗМЕНЁН НА "${status.toUpperCase()}"`);
-            loadObjects();
-        } catch(e) {
-            showToast('❌ ОШИБКА');
-        }
-    }
+    function closeModal() { document.getElementById('objectModal').classList.remove('active'); }
 
-    function closeModal() {
-        document.getElementById('objectModal').classList.remove('active');
-    }
+    window.switchTab = switchTab;
+    window.loadObjects = loadObjects;
+    window.openAddModal = openAddModal;
+    window.editObject = editObject;
+    window.saveObject = saveObject;
+    window.closeModal = closeModal;
+    window.toggleVisibility = toggleVisibility;
+    window.sendPresentation = sendPresentation;
+    window.exportToAd = exportToAd;
+    window.openSellerModal = openSellerModal;
+    window.deleteSeller = deleteSeller;
+    window.openBuyerModal = openBuyerModal;
+    window.deleteBuyer = deleteBuyer;
+    window.saveAdSettings = saveAdSettings;
+    window.startParse = startParse;
 
     loadObjects();
+    loadSellers();
+    loadBuyers();
     document.getElementById('filterStatus').addEventListener('change', loadObjects);
     document.getElementById('filterSearch').addEventListener('keypress', (e) => { if (e.key === 'Enter') loadObjects(); });
     document.getElementById('objectModal').addEventListener('click', (e) => { if (e.target === document.getElementById('objectModal')) closeModal(); });
-    
-    window.editObject = editObject;
-    window.sendPresentation = sendPresentation;
-    window.exportToAd = exportToAd;
-    window.changeStatus = changeStatus;
-    window.openAddModal = openAddModal;
-    window.closeModal = closeModal;
-    window.saveObject = saveObject;
 </script>
 </body>
 </html>
