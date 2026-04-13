@@ -12,14 +12,12 @@
         .btn-gold:hover { background-color: #e09e2e; }
         .btn-green { background-color: #10b981; }
         .btn-green:hover { background-color: #059669; }
-        .btn-yellow { background-color: #f59e0b; }
-        .btn-yellow:hover { background-color: #d97706; }
-        .btn-teal { background-color: #14b8b6; }
-        .btn-teal:hover { background-color: #0d9488; }
         .btn-gray { background-color: #6b7280; }
         .btn-gray:hover { background-color: #4b5563; }
+        .btn-teal { background-color: #14b8b6; }
+        .btn-teal:hover { background-color: #0d9488; }
         .status-active { background: #10b981; color: white; }
-        .status-inactive { background: #f59e0b; color: white; }
+        .status-inactive { background: #6b7280; color: white; }
         .status-sold { background: #6b7280; color: white; }
         .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1f2937; color: white; padding: 10px 20px; border-radius: 9999px; font-size: 16px; z-index: 1000; opacity: 0; transition: opacity 0.3s; }
         .toast.show { opacity: 1; }
@@ -67,7 +65,6 @@
         <button onclick="switchTab('sellers')" id="tab_sellers" class="tab-button tab-inactive">👤 ПРОДАВЦЫ</button>
         <button onclick="switchTab('buyers')" id="tab_buyers" class="tab-button tab-inactive">🏃 ПОКУПАТЕЛИ</button>
         <button onclick="switchTab('feeds')" id="tab_feeds" class="tab-button tab-inactive">📡 ФИДЫ</button>
-        <button onclick="switchTab('ads')" id="tab_ads" class="tab-button tab-inactive">📢 РЕКЛАМА</button>
         <button onclick="switchTab('parser')" id="tab_parser" class="tab-button tab-inactive">🤖 ПАРСЕР</button>
     </div>
 
@@ -166,16 +163,6 @@
         </div>
     </div>
 
-    <!-- ВКЛАДКА: РЕКЛАМА -->
-    <div id="adsTab" class="tab-content" style="display:none;">
-        <div class="bg-white rounded-xl p-4 shadow-sm">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">📢 НАСТРОЙКИ РЕКЛАМЫ</h2>
-            <div class="space-y-4">
-                <div class="border rounded-lg p-4"><h3 class="font-bold text-lg"><i class="fab fa-vk"></i> ВКонтакте (автопостинг)</h3><input type="text" id="vkGroupId" placeholder="ID сообщества (например: realty_sha)" class="w-full border rounded-lg px-3 py-2 mb-2"><input type="text" id="vkToken" placeholder="Токен сообщества" class="w-full border rounded-lg px-3 py-2 mb-2"><button onclick="saveVKSettings()" class="btn-green text-white px-4 py-2 rounded-lg">💾 СОХРАНИТЬ</button></div>
-            </div>
-        </div>
-    </div>
-
     <!-- ВКЛАДКА: ПАРСЕР -->
     <div id="parserTab" class="tab-content" style="display:none;">
         <div class="bg-white rounded-xl p-4 shadow-sm">
@@ -219,7 +206,7 @@
                 <div><label>ТИП ДОМА</label><select id="houseType" class="w-full border rounded-lg px-3 py-2"><option value="панельный">ПАНЕЛЬНЫЙ</option><option value="кирпичный">КИРПИЧНЫЙ</option><option value="монолитный">МОНОЛИТНЫЙ</option></select></div>
             </div>
             <div><label>📁 ССЫЛКА НА ПАПКУ ЯНДЕКС ДИСК</label><input type="text" id="yandexFolderUrl" class="w-full border rounded-lg px-3 py-2"></div>
-            <div><label>📝 ОПИСАНИЕ</label><textarea id="description" rows="3" class="w-full border rounded-lg px-3 py-2"></textarea></div>
+            <div><label>📝 ОПИСАНИЕ</label><textarea id="description" rows="3" class="w-full border rounded-lg px-3 py-2" placeholder="Вставьте сюда описание из парсера..."></textarea></div>
             <div class="private-field p-4 rounded-lg">
                 <h4 class="font-bold mb-3">🔒 КОНФИДЕНЦИАЛЬНО</h4>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -336,35 +323,6 @@
         setTimeout(() => { loadObjects(); showToast('✅ ДАННЫЕ ОБНОВЛЕНЫ'); }, 3000);
     }
 
-    // ========== VK АВТОПОСТИНГ ==========
-    async function publishToVK(objectId) {
-        const obj = objects.find(o => o.ID == objectId);
-        if (!obj) { showToast('❌ ОБЪЕКТ НЕ НАЙДЕН'); return; }
-        
-        const vkGroupId = localStorage.getItem('vk_group_id');
-        const vkToken = localStorage.getItem('vk_token');
-        
-        if (!vkGroupId || !vkToken) { showToast('❌ СНАЧАЛА НАСТРОЙТЕ VK В РАЗДЕЛЕ РЕКЛАМА'); return; }
-        
-        const text = `${obj.Адрес}\n💰 ${Number(obj.Цена).toLocaleString()} ₽\n📐 ${obj.Комнат || '?'} комн., ${obj.Площадь || '?'} м², ${obj.Этаж || '?'}/${obj.Всего_этажей || '?'} эт.\n\n${obj.Описание || ''}\n\n📞 +7 (960) 763-51-70\n🏠 Людмила Мельверт, риэлтор`;
-        
-        try {
-            const url = `https://api.vk.com/method/wall.post?owner_id=${vkGroupId}&from_group=1&message=${encodeURIComponent(text)}&access_token=${vkToken}&v=5.199`;
-            const response = await fetch(`https://cors-anywhere.herokuapp.com/${url}`);
-            const data = await response.json();
-            if (data.error) throw new Error(data.error.error_msg);
-            showToast('✅ ОПУБЛИКОВАНО В VK!');
-        } catch(e) { showToast('❌ ОШИБКА: ' + e.message); }
-    }
-
-    function saveVKSettings() {
-        const groupId = document.getElementById('vkGroupId').value;
-        const token = document.getElementById('vkToken').value;
-        localStorage.setItem('vk_group_id', groupId);
-        localStorage.setItem('vk_token', token);
-        showToast('✅ НАСТРОЙКИ VK СОХРАНЕНЫ');
-    }
-
     // ========== ОБЪЕКТЫ ==========
     async function loadObjects() {
         const filterStatus = document.getElementById('filterStatus').value;
@@ -393,7 +351,7 @@
                     <div class="flex-1">
                         <div class="flex justify-between items-start flex-wrap gap-2">
                             <h3 class="text-xl font-bold text-gray-800">${obj.Адрес || 'БЕЗ АДРЕСА'}</h3>
-                            <button onclick="toggleVisibility(${obj.ID}, '${obj.Статус}')" class="px-3 py-1 rounded-lg text-sm font-semibold ${obj.Статус === 'активно' ? 'btn-green text-white' : (obj.Статус === 'неактивно' ? 'btn-yellow text-white' : 'btn-gray text-white')}">
+                            <button onclick="toggleVisibility(${obj.ID}, '${obj.Статус}')" class="px-3 py-1 rounded-lg text-sm font-semibold ${obj.Статус === 'активно' ? 'btn-green text-white' : 'btn-gray text-white'}">
                                 ${obj.Статус === 'активно' ? '✅ АКТИВНО' : (obj.Статус === 'неактивно' ? '⏸ НЕАКТИВНО' : '❌ ПРОДАНО')}
                             </button>
                         </div>
@@ -405,7 +363,6 @@
                         </div>
                         <div class="flex gap-2 mt-3 flex-wrap">
                             <button onclick="editObject(${obj.ID})" class="bg-blue-600 text-white px-3 py-1 rounded-lg text-sm">✏️ РЕДАКТ.</button>
-                            <button onclick="publishToVK(${obj.ID})" class="bg-teal-600 text-white px-3 py-1 rounded-lg text-sm">📢 В VK</button>
                             <button onclick="sendPresentation(${obj.ID})" class="bg-green-600 text-white px-3 py-1 rounded-lg text-sm">📤 ПРЕЗЕНТАЦИЯ</button>
                             <button onclick="exportToAd(${obj.ID})" class="bg-purple-600 text-white px-3 py-1 rounded-lg text-sm">📢 В РЕКЛАМУ</button>
                         </div>
@@ -465,7 +422,6 @@
         if (tab === 'objects') loadObjects();
         if (tab === 'sellers') loadSellers();
         if (tab === 'buyers') loadBuyers();
-        if (tab === 'ads') { document.getElementById('vkGroupId').value = localStorage.getItem('vk_group_id') || ''; document.getElementById('vkToken').value = localStorage.getItem('vk_token') || ''; }
         if (tab === 'parser') startParser();
     }
 
@@ -522,9 +478,9 @@
 
     window.switchTab = switchTab; window.loadObjects = loadObjects; window.openAddModal = openAddModal; window.editObject = editObject;
     window.saveObject = saveObject; window.closeModal = closeModal; window.toggleVisibility = toggleVisibility;
-    window.sendPresentation = sendPresentation; window.exportToAd = exportToAd; window.publishToVK = publishToVK;
+    window.sendPresentation = sendPresentation; window.exportToAd = exportToAd;
     window.openSellerModal = openSellerModal; window.deleteSeller = deleteSeller; window.openBuyerModal = openBuyerModal;
-    window.deleteBuyer = deleteBuyer; window.saveVKSettings = saveVKSettings; window.copyToClipboard = copyToClipboard;
+    window.deleteBuyer = deleteBuyer; window.copyToClipboard = copyToClipboard;
     window.startParser = startParser; window.runParserAndUpdate = runParserAndUpdate; window.generateAllFeeds = generateAllFeeds;
 
     loadObjects(); loadSellers(); loadBuyers();
