@@ -66,8 +66,7 @@
 </section>
 
 <script>
-    // ==== ЭТО ВАШ НОВЫЙ URL ====
-    const API_URL = 'https://script.google.com/macros/s/AKfycbwOCClO768kELSJSHjmP4SI56WvHSeUdG6Fr2WfTzVaxnex89Uam9B-bAeEA6hNYl9jIw/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbwIiAgyat2jTYVE6UTZqm6PytcTcRgzrRr9mwo2rGxrXptCJkrW-fimDeTdiLFBDEYiVg/exec';
     
     async function loadObjects() {
         const address = document.getElementById('filterAddress').value.toLowerCase();
@@ -103,7 +102,7 @@
                     <p class="text-2xl font-bold text-gold mt-1">${Number(obj.Цена).toLocaleString()} ₽</p>
                     <div class="flex gap-3 mt-2 text-sm text-gray-600">
                         <span><i class="fas fa-door-open"></i> ${obj.Комнат || '?'} комн.</span>
-                        <span><i class="fas fa-layer-group"></i> ${obj.Этаж || '?'} эт.</span>
+                        <span><i class="fas fa-layer-group"></i> ${obj.Этаж || '?'}/${obj.Всего_этажей || '?'} эт.</span>
                         <span><i class="fas fa-ruler-combined"></i> ${obj.Площадь || '?'} м²</span>
                     </div>
                     <button onclick="showContactForm('${obj.Адрес}')" class="w-full mt-4 btn-gold text-gray-900 py-2 rounded-lg font-semibold">📞 Узнать подробнее</button>
