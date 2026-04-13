@@ -16,9 +16,11 @@
         .btn-yellow:hover { background-color: #d97706; }
         .btn-teal { background-color: #14b8b6; }
         .btn-teal:hover { background-color: #0d9488; }
+        .btn-gray { background-color: #6b7280; }
+        .btn-gray:hover { background-color: #4b5563; }
         .status-active { background: #10b981; color: white; }
         .status-inactive { background: #f59e0b; color: white; }
-        .status-sold { background: #ef4444; color: white; }
+        .status-sold { background: #6b7280; color: white; }
         .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1f2937; color: white; padding: 10px 20px; border-radius: 9999px; font-size: 16px; z-index: 1000; opacity: 0; transition: opacity 0.3s; }
         .toast.show { opacity: 1; }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; }
@@ -30,7 +32,6 @@
         .tab-inactive { background: #e5e7eb; color: #6b7280; }
         label { font-weight: 600; font-size: 14px; }
         input, select, textarea { font-size: 16px; padding: 10px; border-radius: 10px; }
-        .agent-photo { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; }
         .feed-link { background: #f3f4f6; padding: 8px; border-radius: 8px; font-family: monospace; word-break: break-all; }
         @media (max-width: 640px) {
             .tab-button { padding: 6px 12px; font-size: 12px; }
@@ -51,9 +52,9 @@
             </div>
         </div>
         <div class="flex items-center gap-2">
-            <img src="фото.jpg" alt="Фото риэлтора" class="agent-photo border-2 border-gold">
             <a href="catalog.html" class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg text-sm font-semibold">📋 КАТАЛОГ</a>
             <a href="index.html" class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg text-sm font-semibold">🏠 ЛЕНДИНГ</a>
+            <a href="viewer.html" class="bg-teal-500 text-white px-4 py-2 rounded-lg text-sm font-semibold">👁️ ПРОСМОТР</a>
         </div>
     </div>
 </header>
@@ -179,6 +180,11 @@
     <div id="parserTab" class="tab-content" style="display:none;">
         <div class="bg-white rounded-xl p-4 shadow-sm">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">🤖 УПРАВЛЕНИЕ ПАРСЕРОМ</h2>
+            <div class="bg-blue-50 p-4 rounded-lg mb-4">
+                <p class="text-sm font-bold">📌 РЕЗУЛЬТАТЫ ПАРСИНГА СМОТРИТЕ ЗДЕСЬ:</p>
+                <a href="viewer.html" class="text-teal-600 font-bold underline text-lg">👉 https://asix114.github.io/realtor2/viewer.html</a>
+                <p class="text-sm mt-2">Нажмите «ОБНОВИТЬ» на той странице, чтобы увидеть свежие объявления.</p>
+            </div>
             <div class="grid md:grid-cols-2 gap-4 mb-6">
                 <button onclick="startParser()" class="btn-green text-white p-3 rounded-lg font-semibold">▶ ЗАПУСТИТЬ ПАРСЕР</button>
                 <button onclick="runParserAndUpdate()" class="btn-teal text-white p-3 rounded-lg font-semibold">🔄 ЗАПУСТИТЬ И ОБНОВИТЬ CRM</button>
@@ -315,7 +321,7 @@
         try {
             const response = await fetch(`${PARSER_URL}/parse/vk?search=квартира`);
             if (response.ok) {
-                document.getElementById('parserStatus').innerHTML = '✅ ПАРСЕР РАБОТАЕТ';
+                document.getElementById('parserStatus').innerHTML = '✅ ПАРСЕР РАБОТАЕТ<br>📌 РЕЗУЛЬТАТЫ: <a href="viewer.html" target="_blank" class="text-teal-600 underline">viewer.html</a>';
                 showToast('ПАРСЕР ЗАПУЩЕН');
             }
         } catch(e) {
@@ -387,7 +393,7 @@
                     <div class="flex-1">
                         <div class="flex justify-between items-start flex-wrap gap-2">
                             <h3 class="text-xl font-bold text-gray-800">${obj.Адрес || 'БЕЗ АДРЕСА'}</h3>
-                            <button onclick="toggleVisibility(${obj.ID}, '${obj.Статус}')" class="px-3 py-1 rounded-lg text-sm font-semibold ${obj.Статус === 'активно' ? 'btn-green text-white' : (obj.Статус === 'неактивно' ? 'btn-yellow text-white' : 'bg-red-500 text-white')}">
+                            <button onclick="toggleVisibility(${obj.ID}, '${obj.Статус}')" class="px-3 py-1 rounded-lg text-sm font-semibold ${obj.Статус === 'активно' ? 'btn-green text-white' : (obj.Статус === 'неактивно' ? 'btn-yellow text-white' : 'btn-gray text-white')}">
                                 ${obj.Статус === 'активно' ? '✅ АКТИВНО' : (obj.Статус === 'неактивно' ? '⏸ НЕАКТИВНО' : '❌ ПРОДАНО')}
                             </button>
                         </div>
