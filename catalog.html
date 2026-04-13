@@ -10,12 +10,6 @@
         .btn-gold { background-color: #f5b042; }
         .btn-gold:hover { background-color: #e09e2e; }
         .text-gold { color: #f5b042; }
-        body { font-size: 16px; }
-        button, a { font-size: 16px; }
-        @media (max-width: 640px) {
-            .card-title { font-size: 18px; }
-            .card-price { font-size: 22px; }
-        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -24,62 +18,55 @@
     <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center flex-wrap gap-2">
         <div class="flex items-center gap-3">
             <img src="логотип недвижка золотой.png" alt="Лого" class="h-10 w-auto">
-            <div>
-                <h1 class="text-xl font-bold text-gray-800">ЛЮДМИЛА МЕЛЬВЕРТ</h1>
-                <p class="text-xs text-gray-500">РИЭЛТОР С 26-ЛЕТНИМ СТАЖЕМ</p>
-            </div>
+            <div><h1 class="text-xl font-bold text-gray-800">Людмила Мельверт</h1><p class="text-xs text-gray-500">Риэлтор с 26-летним стажем</p></div>
         </div>
         <div class="flex gap-2">
-            <a href="index.html" class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg text-sm font-semibold">🏠 НА ГЛАВНУЮ</a>
-            <a href="#contact" class="btn-gold text-gray-900 px-4 py-2 rounded-xl text-sm font-semibold">БЕСПЛАТНО</a>
+            <a href="index.html" class="bg-gray-200 px-4 py-2 rounded-lg text-sm">🏠 На главную</a>
+            <a href="#contact" class="btn-gold text-gray-900 px-4 py-2 rounded-lg text-sm font-semibold">Бесплатно</a>
         </div>
     </div>
 </header>
 
 <main class="max-w-7xl mx-auto px-4 py-8">
-    <div class="text-center mb-8">
-        <h1 class="text-3xl md:text-4xl font-bold text-gray-800">🏠 КАТАЛОГ КВАРТИР</h1>
-        <p class="text-gray-600 mt-2 text-base">ШАРЫПОВО И УЖУР</p>
-    </div>
-
-    <div class="bg-white rounded-xl p-4 mb-8 shadow-sm">
+    <h1 class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-8">🏠 Каталог квартир</h1>
+    
+    <div class="bg-white rounded-xl p-4 mb-6 shadow-sm">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <input type="text" id="filterAddress" placeholder="ПОИСК ПО АДРЕСУ" class="border rounded-lg px-3 py-2 text-base">
-            <select id="filterRooms" class="border rounded-lg px-3 py-2 text-base">
-                <option value="">ВСЕ КОМНАТЫ</option>
-                <option value="1">1 КОМНАТА</option>
-                <option value="2">2 КОМНАТЫ</option>
-                <option value="3">3 КОМНАТЫ</option>
-                <option value="4">4+ КОМНАТЫ</option>
+            <input type="text" id="filterAddress" placeholder="Поиск по адресу" class="border rounded-lg px-3 py-2 text-sm">
+            <select id="filterRooms" class="border rounded-lg px-3 py-2 text-sm">
+                <option value="">Все комнаты</option>
+                <option value="1">1 комната</option>
+                <option value="2">2 комнаты</option>
+                <option value="3">3 комнаты</option>
             </select>
-            <input type="number" id="filterPriceMax" placeholder="МАКС. ЦЕНА" class="border rounded-lg px-3 py-2 text-base">
-            <button onclick="loadObjects()" class="btn-gold text-gray-900 px-4 py-2 rounded-lg font-semibold">🔍 НАЙТИ</button>
+            <input type="number" id="filterPriceMax" placeholder="Макс. цена" class="border rounded-lg px-3 py-2 text-sm">
+            <button onclick="loadObjects()" class="btn-gold text-gray-900 px-4 py-2 rounded-lg font-semibold">🔍 Найти</button>
         </div>
     </div>
 
     <div id="objectsList" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="text-center py-10 text-gray-500 col-span-3 text-base">ЗАГРУЗКА...</div>
+        <div class="text-center py-10 text-gray-500 col-span-3">Загрузка...</div>
     </div>
 </main>
 
 <section id="contact" class="bg-gray-900 text-white py-12 mt-8">
     <div class="max-w-3xl mx-auto px-4 text-center">
-        <h2 class="text-2xl font-bold mb-4">БЕСПЛАТНАЯ КОНСУЛЬТАЦИЯ</h2>
-        <p class="mb-6 text-base">ОСТАВЬТЕ ЗАЯВКУ — Я ПЕРЕЗВОНЮ В ТЕЧЕНИЕ ЧАСА</p>
+        <h2 class="text-2xl font-bold mb-4">Бесплатная консультация</h2>
+        <p class="mb-6">Оставьте заявку — я перезвоню в течение часа</p>
         <form id="leadForm" class="flex flex-col md:flex-row gap-3">
-            <input type="text" id="leadName" placeholder="ВАШЕ ИМЯ" required class="flex-1 bg-white/20 text-white placeholder-white/70 px-4 py-3 rounded-xl text-base">
-            <input type="tel" id="leadPhone" placeholder="ТЕЛЕФОН" required class="flex-1 bg-white/20 text-white placeholder-white/70 px-4 py-3 rounded-xl text-base">
-            <button type="submit" class="btn-gold text-gray-900 px-6 py-3 rounded-xl font-semibold text-base">ОТПРАВИТЬ</button>
+            <input type="text" id="leadName" placeholder="Ваше имя" required class="flex-1 bg-white/20 text-white placeholder-white/70 px-4 py-3 rounded-xl">
+            <input type="tel" id="leadPhone" placeholder="Телефон" required class="flex-1 bg-white/20 text-white placeholder-white/70 px-4 py-3 rounded-xl">
+            <button type="submit" class="btn-gold text-gray-900 px-6 py-3 rounded-xl font-semibold">Отправить</button>
         </form>
-        <div class="flex justify-center gap-4 mt-6 flex-wrap">
-            <a href="tel:89607635170" class="text-white text-base"><i class="fas fa-phone"></i> +7 (960) 763-51-70</a>
-            <a href="mailto:marigoda68@mail.ru" class="text-white text-base"><i class="far fa-envelope"></i> marigoda68@mail.ru</a>
+        <div class="flex justify-center gap-4 mt-6">
+            <a href="tel:89607635170" class="text-white"><i class="fas fa-phone"></i> +7 (960) 763-51-70</a>
+            <a href="mailto:marigoda68@mail.ru" class="text-white"><i class="far fa-envelope"></i> marigoda68@mail.ru</a>
         </div>
     </div>
 </section>
 
 <script>
-    const API_URL = 'https://script.google.com/macros/s/AKfycbzLE7IFiWI-aH9cTgPkT1AGmAwUym4ggyZIvD7UdD3CJXxf6UT7mlOLwV7PNQx28IuX/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbyq3evlRCqQRxSucX-3KwcxjjJR_9rC6sy3mOrge4iRptitc2KPtEDzHYLrw_USBqDhDA/exec';
     
     async function loadObjects() {
         const address = document.getElementById('filterAddress').value.toLowerCase();
@@ -93,44 +80,48 @@
             if (data.status === 'success') {
                 let objects = data.objects || [];
                 objects = objects.filter(obj => obj.Статус === 'активно');
-                
                 if (address) objects = objects.filter(obj => obj.Адрес?.toLowerCase().includes(address));
                 if (rooms) objects = objects.filter(obj => obj.Комнат == rooms);
                 if (priceMax) objects = objects.filter(obj => Number(obj.Цена) <= Number(priceMax));
-                
                 renderObjects(objects);
             }
-        } catch(e) {
-            document.getElementById('objectsList').innerHTML = '<div class="text-center py-10 text-red-500 col-span-3">❌ ОШИБКА ЗАГРУЗКИ</div>';
-        }
+        } catch(e) { console.error(e); }
     }
     
     function renderObjects(objects) {
         const container = document.getElementById('objectsList');
-        
-        if (objects.length === 0) {
-            container.innerHTML = '<div class="text-center py-10 text-gray-500 col-span-3 text-base">🏠 НЕТ ОБЪЕКТОВ</div>';
-            return;
-        }
+        if (objects.length === 0) { container.innerHTML = '<div class="text-center py-10 text-gray-500 col-span-3">🏠 Нет объектов</div>'; return; }
         
         container.innerHTML = objects.map(obj => `
             <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
                 <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
-                    <i class="fas fa-home text-gray-400 text-5xl"></i>
+                    ${obj.Фото ? `<img src="${obj.Фото}" class="w-full h-full object-cover">` : '<i class="fas fa-home text-gray-400 text-5xl"></i>'}
                 </div>
                 <div class="p-4">
-                    <h3 class="font-bold text-xl text-gray-800">${obj.Адрес || 'АДРЕС НЕ УКАЗАН'}</h3>
-                    <p class="text-3xl font-bold text-gold mt-1">${Number(obj.Цена).toLocaleString()} ₽</p>
+                    <h3 class="font-bold text-xl text-gray-800">${obj.Адрес || 'Адрес не указан'}</h3>
+                    <p class="text-2xl font-bold text-gold mt-1">${Number(obj.Цена).toLocaleString()} ₽</p>
                     <div class="flex gap-3 mt-2 text-sm text-gray-600">
-                        <span><i class="fas fa-door-open"></i> ${obj.Комнат || '?'} КОМН.</span>
-                        <span><i class="fas fa-layer-group"></i> ${obj.Этаж || '?'}/${obj.Всего_этажей || '?'} ЭТ.</span>
+                        <span><i class="fas fa-door-open"></i> ${obj.Комнат || '?'} комн.</span>
+                        <span><i class="fas fa-layer-group"></i> ${obj.Этаж || '?'} эт.</span>
                         <span><i class="fas fa-ruler-combined"></i> ${obj.Площадь || '?'} м²</span>
                     </div>
-                    ${obj.Яндекс_папка ? `<div class="mt-2 text-sm text-blue-500">📁 <a href="${obj.Яндекс_папка}" target="_blank">СМОТРЕТЬ ФОТО</a></div>` : ''}
-                    <a href="object.html?id=${obj.ID}" class="block w-full mt-4 btn-gold text-gray-900 py-2 rounded-lg font-semibold text-center text-base">🔍 ПОДРОБНЕЕ</a>
+                    <button onclick="showContactForm('${obj.Адрес}')" class="w-full mt-4 btn-gold text-gray-900 py-2 rounded-lg font-semibold">📞 Узнать подробнее</button>
                 </div>
             </div>
         `).join('');
+    }
+    
+    function showContactForm(address) {
+        document.getElementById('leadForm').scrollIntoView({ behavior: 'smooth' });
+        showToast(`Заявка на квартиру: ${address}`);
+    }
+    
+    function showToast(msg) {
+        const toast = document.createElement('div');
+        toast.className = 'fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-full text-sm z-50';
+        toast.textContent = msg;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
     }
     
     const leadForm = document.getElementById('leadForm');
@@ -139,23 +130,12 @@
             e.preventDefault();
             const name = document.getElementById('leadName').value;
             const phone = document.getElementById('leadPhone').value;
-            
             try {
                 await fetch(`${API_URL}?action=addLead&name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}`);
-                showToast('✅ ЗАЯВКА ОТПРАВЛЕНА! Я СВЯЖУСЬ С ВАМИ.');
+                showToast('✅ Заявка отправлена! Я свяжусь с вами.');
                 leadForm.reset();
-            } catch(e) {
-                showToast('❌ ОШИБКА. ПОЗВОНИТЕ ПО ТЕЛЕФОНУ.');
-            }
+            } catch(e) { showToast('Ошибка. Позвоните по телефону.'); }
         });
-    }
-    
-    function showToast(msg) {
-        const toast = document.createElement('div');
-        toast.className = 'fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-5 py-2 rounded-full text-base z-50';
-        toast.textContent = msg;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
     }
     
     loadObjects();
