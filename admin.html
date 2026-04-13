@@ -20,7 +20,6 @@
         .modal.active { display: flex; }
         input, select, textarea { font-size: 16px; padding: 10px; border-radius: 10px; border: 1px solid #d1d5db; }
         label { font-weight: 600; font-size: 14px; }
-        .object-card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -49,6 +48,7 @@
     <div id="objectsList" class="space-y-3">Загрузка...</div>
 </main>
 
+<!-- Модальное окно -->
 <div id="objectModal" class="modal">
     <div class="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4">
         <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
@@ -57,18 +57,18 @@
         </div>
         <div class="p-6 space-y-3">
             <input type="hidden" id="objectId">
-            <div><label>🏠 Адрес *</label><input type="text" id="address" class="w-full border rounded-lg" placeholder="ул. Ленина, д. 10"></div>
-            <div><label>💰 Цена (₽) *</label><input type="number" id="price" class="w-full border rounded-lg" placeholder="3 500 000"></div>
+            <div><label>🏠 Адрес *</label><input type="text" id="address" class="w-full border rounded-lg"></div>
+            <div><label>💰 Цена (₽) *</label><input type="number" id="price" class="w-full border rounded-lg"></div>
             <div class="grid grid-cols-2 gap-3">
-                <div><label>Комнат</label><input type="number" id="rooms" class="w-full border rounded-lg" placeholder="2"></div>
+                <div><label>Комнат</label><input type="number" id="rooms" class="w-full border rounded-lg"></div>
                 <div><label>Этаж</label><input type="text" id="floor" class="w-full border rounded-lg" placeholder="5/9"></div>
             </div>
             <div class="grid grid-cols-2 gap-3">
-                <div><label>Площадь (м²)</label><input type="text" id="area" class="w-full border rounded-lg" placeholder="48"></div>
+                <div><label>Площадь (м²)</label><input type="text" id="area" class="w-full border rounded-lg"></div>
                 <div><label>Балкон</label><select id="balcony" class="w-full border rounded-lg"><option value="">Нет</option><option value="балкон">Балкон</option><option value="лоджия">Лоджия</option></select></div>
             </div>
-            <div><label>📝 Описание</label><textarea id="description" rows="3" class="w-full border rounded-lg" placeholder="Просторная квартира..."></textarea></div>
-            <div><label>📁 Ссылка на фото (Яндекс Диск)</label><input type="text" id="photoUrl" class="w-full border rounded-lg" placeholder="https://disk.yandex.ru/..."></div>
+            <div><label>📝 Описание</label><textarea id="description" rows="3" class="w-full border rounded-lg"></textarea></div>
+            <div><label>📁 Ссылка на фото (Яндекс Диск)</label><input type="text" id="photoUrl" class="w-full border rounded-lg"></div>
             <div><label>Статус</label><select id="status" class="w-full border rounded-lg"><option value="активно">Активно (в каталоге)</option><option value="неактивно">Неактивно (скрыто)</option><option value="продано">Продано</option></select></div>
         </div>
         <div class="border-t px-6 py-4 flex justify-end gap-3">
@@ -79,7 +79,9 @@
 </div>
 
 <script>
-    const API_URL = 'https://script.google.com/macros/s/AKfycbyq3evlRCqQRxSucX-3KwcxjjJR_9rC6sy3mOrge4iRptitc2KPtEDzHYLrw_USBqDhDA/exec';
+    // ==== ЭТО ВАШ НОВЫЙ URL ====
+    const API_URL = 'https://script.google.com/macros/s/AKfycbwOCClO768kELSJSHjmP4SI56WvHSeUdG6Fr2WfTzVaxnex89Uam9B-bAeEA6hNYl9jIw/exec';
+    
     let objects = [];
     let editId = null;
 
