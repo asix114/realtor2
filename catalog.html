@@ -29,7 +29,10 @@
                 <p class="text-xs text-gray-500">РИЭЛТОР С 26-ЛЕТНИМ СТАЖЕМ</p>
             </div>
         </div>
-        <a href="#contact" class="btn-gold text-gray-900 px-5 py-2 rounded-xl text-base font-semibold">БЕСПЛАТНО</a>
+        <div class="flex gap-2">
+            <a href="index.html" class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg text-sm font-semibold">🏠 НА ГЛАВНУЮ</a>
+            <a href="#contact" class="btn-gold text-gray-900 px-4 py-2 rounded-xl text-sm font-semibold">БЕСПЛАТНО</a>
+        </div>
     </div>
 </header>
 
@@ -39,7 +42,6 @@
         <p class="text-gray-600 mt-2 text-base">ШАРЫПОВО И УЖУР</p>
     </div>
 
-    <!-- ФИЛЬТРЫ -->
     <div class="bg-white rounded-xl p-4 mb-8 shadow-sm">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
             <input type="text" id="filterAddress" placeholder="ПОИСК ПО АДРЕСУ" class="border rounded-lg px-3 py-2 text-base">
@@ -55,13 +57,11 @@
         </div>
     </div>
 
-    <!-- СПИСОК ОБЪЕКТОВ -->
     <div id="objectsList" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div class="text-center py-10 text-gray-500 col-span-3 text-base">ЗАГРУЗКА...</div>
     </div>
 </main>
 
-<!-- ФОРМА СВЯЗИ -->
 <section id="contact" class="bg-gray-900 text-white py-12 mt-8">
     <div class="max-w-3xl mx-auto px-4 text-center">
         <h2 class="text-2xl font-bold mb-4">БЕСПЛАТНАЯ КОНСУЛЬТАЦИЯ</h2>
@@ -133,7 +133,6 @@
         `).join('');
     }
     
-    // ФОРМА ЗАЯВКИ
     const leadForm = document.getElementById('leadForm');
     if (leadForm) {
         leadForm.addEventListener('submit', async (e) => {
