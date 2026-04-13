@@ -59,14 +59,12 @@
         <div class="p-6 space-y-4">
             <input type="hidden" id="objectId">
             
-            <!-- Адрес -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="md:col-span-2"><label>🏠 Адрес *</label><input type="text" id="address" class="w-full border rounded-lg" placeholder="ул. Ленина, д. 10"></div>
                 <div><label>🔒 Номер квартиры (скрыто)</label><input type="text" id="apartment" class="w-full border rounded-lg bg-yellow-50" placeholder="45"></div>
                 <div><label>💰 Цена (₽) *</label><input type="number" id="price" class="w-full border rounded-lg" placeholder="3 500 000"></div>
             </div>
             
-            <!-- Характеристики -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div><label>Комнат</label><input type="number" id="rooms" class="w-full border rounded-lg" placeholder="2"></div>
                 <div><label>Этаж</label><input type="text" id="floor" class="w-full border rounded-lg" placeholder="5"></div>
@@ -79,11 +77,9 @@
                 <div><label>Тип дома</label><select id="houseType" class="w-full border rounded-lg"><option value="панельный">Панельный</option><option value="кирпичный">Кирпичный</option><option value="монолитный">Монолитный</option></select></div>
             </div>
             
-            <!-- Фото и описание -->
             <div><label>📁 Ссылка на папку Яндекс Диск (фото)</label><input type="text" id="photoUrl" class="w-full border rounded-lg" placeholder="https://disk.yandex.ru/..."></div>
             <div><label>📝 Описание для покупателей</label><textarea id="description" rows="3" class="w-full border rounded-lg" placeholder="Просторная квартира, свежий ремонт..."></textarea></div>
             
-            <!-- Конфиденциально -->
             <div class="private-field p-4 rounded-lg">
                 <h4 class="font-bold text-gray-800 mb-3">🔒 Конфиденциально (видно только вам)</h4>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -96,7 +92,6 @@
                 </div>
             </div>
             
-            <!-- Документы -->
             <div class="documents-field p-4 rounded-lg">
                 <h4 class="font-bold text-gray-800 mb-3">📄 Документы (скрыто от клиентов)</h4>
                 <div class="grid grid-cols-1 gap-3">
@@ -106,7 +101,6 @@
                 </div>
             </div>
             
-            <!-- Статус -->
             <div><label>Статус</label><select id="status" class="w-full border rounded-lg"><option value="активно">Активно (в каталоге)</option><option value="неактивно">Неактивно (скрыто)</option><option value="продано">Продано</option></select></div>
         </div>
         <div class="border-t px-6 py-4 flex justify-end gap-3">
@@ -117,7 +111,7 @@
 </div>
 
 <script>
-    const API_URL = 'https://script.google.com/macros/s/AKfycbwOCClO768kELSJSHjmP4SI56WvHSeUdG6Fr2WfTzVaxnex89Uam9B-bAeEA6hNYl9jIw/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbwIiAgyat2jTYVE6UTZqm6PytcTcRgzrRr9mwo2rGxrXptCJkrW-fimDeTdiLFBDEYiVg/exec';
     let objects = [];
     let editId = null;
 
@@ -273,7 +267,7 @@
                 showToast('✅ Сохранено');
                 closeModal();
                 loadObjects();
-            } else { showToast('Ошибка сохранения: ' + JSON.stringify(data)); }
+            } else { showToast('Ошибка сохранения'); }
         } catch(e) { showToast('Ошибка соединения'); }
     }
 
